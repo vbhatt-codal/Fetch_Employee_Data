@@ -11,6 +11,4 @@ class EmployeeController extends \Phalcon\Mvc\Controller
     	  $this->view->employee=$employee;
         return json_encode($employee);
     }
-
-
 }
