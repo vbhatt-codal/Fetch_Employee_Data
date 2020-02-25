@@ -2,16 +2,15 @@
 
 use Phlacon\Mvc\Model;
 
-class EmployeeprojectController extends ControllerBase
+class EmployeeProjectController extends ControllerBase
 {
 
-    public function indexAction()
+    public function indexAction($id)
     {
-        //$employee = EmployeeProject::findFirst($id);
+        $employee = EmployeeProject::findFirst($id);
         // get the (single) category that is related to this job
-        //$employee = $employee->getRelated('employee');
-    	  $employee = Employee::find();
-         // $this->view->employee=$employee;
+        $employee = $employee->getRelated('employee');
+    	  $this->view->employee=$employee;
         return json_encode($employee);
     }
 

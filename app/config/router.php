@@ -5,10 +5,26 @@ use Phalcon\Mvc\Router;
 
 //$router = $di->getRouter();
 
-$router->addGet('/Employee', array(
-     'controller' => "Employee",
-     'action'     => "index"
- ));
+//Get one element. Ex: /user/asdads,dfg.78dgd*dfg
+$router->addGet('/:controller/', array(
+    'controller' => 1,
+    'action'     => "index"
+));
+
+$router->addPost('/:controller/', array(
+    'controller' => 1,
+    'action'     => "create"
+));
+
+// $router->addGet('/Employee', array(
+//      'controller' => "Employeeproject",
+//      'action'     => "index"
+//  ));
+
+// $router->addPost('/Employee', array(
+//      'controller' => "Employeeproject",
+//      'action'     => "create"
+//  ));
 // Define your routes here
 
 //$router->handle();

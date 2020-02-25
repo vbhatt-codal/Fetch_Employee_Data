@@ -7,17 +7,13 @@ class EmployeeprojectController extends ControllerBase
 
     public function indexAction()
     {
-        //$employee = EmployeeProject::findFirst($id);
-        // get the (single) category that is related to this job
-        //$employee = $employee->getRelated('employee');
-    	  $employee = Employee::find();
-         // $this->view->employee=$employee;
+        $employee = EmployeeProject::find();
         return json_encode($employee);
     }
 
     public function createAction()
     {
-    	$employee = new EmployeeProject();
+    	$employee = new Employeeproject();
     	$employee->project_name = $this->request->getPost("project_name");
      	$employee->start_date = $this->request->getPost("start_date");
      	$employee->end_date = $this->request->getPost("end_date");
