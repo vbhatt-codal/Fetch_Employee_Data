@@ -5,7 +5,7 @@ use Phalcon\Mvc\Router;
 
 //$router = $di->getRouter();
 
-//Get one element. Ex: /user/asdads,dfg.78dgd*dfg
+
 $router->addGet('/:controller/', array(
     'controller' => 1,
     'action'     => "index"
@@ -16,16 +16,15 @@ $router->addPost('/:controller/', array(
     'action'     => "create"
 ));
 
-// $router->addGet('/Employee', array(
-//      'controller' => "Employeeproject",
-//      'action'     => "index"
-//  ));
+$router->addPut('/:controller/{id:[0-9]+}', array(
+    'controller' => 1,
+    'action'     => "update"
+));
 
-// $router->addPost('/Employee', array(
-//      'controller' => "Employeeproject",
-//      'action'     => "create"
-//  ));
-// Define your routes here
+$router->addDelete('/:controller/{id:[0-9]+}', array(
+    'controller' => 1,
+    'action'     => "delete"
+));
 
 //$router->handle();
 return $router;

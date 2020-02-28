@@ -1,5 +1,7 @@
 <?php
 
+include BASE_PATH.'/vendor/autoload.php';
+
 $loader = new \Phalcon\Loader();
 
 /**

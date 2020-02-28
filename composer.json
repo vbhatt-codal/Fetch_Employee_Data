@@ -1,0 +1,6 @@
+{
+    "name": "resourceplanning/magic",
+    "require": {
+        "zircote/swagger-php": "^2.0"
+    }
+}
