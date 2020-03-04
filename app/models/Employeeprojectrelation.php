@@ -1,7 +1,7 @@
 <?php
 use \Phalcon\Mvc\Model;
 /**
- * @SWG\Definition(definition="Employeeproject", type="object")
+ * @SWG\Definition(definition="Employeeprojectrelation", type="object")
  */
 class Employeeprojectrelation extends \Phalcon\Mvc\Model
 {  

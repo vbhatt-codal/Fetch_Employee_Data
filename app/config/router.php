@@ -61,10 +61,10 @@ $router->add(
 );*/
 
 
-$router->addGet('/Employeeprojectrelation/{id:[0-9]+}', array(
-    'controller' => "Employeeprojectrelation",
-    'action'     => "findbyidrelation"
-));
+// $router->addGet('/:controller/{id:[0-9]+}', array(
+//     'controller' => "Employeeprojectrelation",
+//     'action'     => "findbyidrelation"
+// ));
 
 $router->addPost('/:controller/', array(
     'controller' => 1,
@@ -84,6 +84,13 @@ $router->addGet('/:controller/([a-zA-Z0-9\_\-]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9\_\
     'relationship'  => 3,
     'related_item'  => 4
 ));
+// $router->addGet('/:controller/([a-zA-Z0-9\_\-]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9\_\-]+)', array(
+//     'controller'    => 1,
+//     'action'        => "get",
+//     'id'            => 2,
+//     'relationship'  => 3,
+//     'related_item'  => 4
+// ));
 
 //$router->handle();
 return $router;
