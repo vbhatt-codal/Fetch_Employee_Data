@@ -13,7 +13,7 @@ try {
      * the services that provide a full stack framework.
      */
     $di = new FactoryDefault();
-
+    $dispatcher = new \Phalcon\Mvc\Dispatcher();
     /**
      * Handle routes
      */

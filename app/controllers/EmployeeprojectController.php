@@ -14,6 +14,8 @@
   * )
  */
 use Phlacon\Mvc\Model;
+use Phalcon\Mvc\Model\Query\Builder;
+
 
 class EmployeeprojectController extends ControllerBase
 {
@@ -48,6 +50,44 @@ class EmployeeprojectController extends ControllerBase
             //"conditions" => "is_deleted=0",
             'is_deleted is NULL'
         ]);
+        return $this->response->setJsonContent($employee);
+    }
+
+    /**
+     * @SWG\Get(
+     *     tags={"Employee"},
+     *     path="/Employeeproject/findbyid/{id}",
+     *     description="Returns a Department based on a single ID",
+     *     summary="Get Employee Project Deatils",
+     *     operationId="GetEmployee",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *   @SWG\Parameter(
+     *     description="ID of Employee project",
+     *     in="path",
+     *     name="id",
+     *     required=true,
+     *     type="integer",
+     *     format="int64"
+     *   ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="department response",
+               @SWG\Schema(ref="#/definitions/Employeeproject")
+     *     ),
+     *     @SWG\Response(
+     *         response="403",
+     *         description="Not Authorized Invalid or missing Authorization header"
+     *     ),
+     *     @SWG\Response(
+     *         response="500",
+     *         description="unexpected error",
+     *     )
+     * )
+     */
+    public function findbyidAction($project_code)
+    {
+        $employee = Employeeproject::findFirst($project_code);
         return $this->response->setJsonContent($employee);
     }
 
@@ -101,7 +141,7 @@ class EmployeeprojectController extends ControllerBase
 
         if (!$employee->create()) 
          {
-            return $this->byIdresponse->setJsonContent("Data Not Inserted.");
+            return $this->response->setJsonContent("Data Not Inserted.");
          }
         else
          {  
@@ -237,5 +277,6 @@ class EmployeeprojectController extends ControllerBase
         } 
 
       }
+
 
  }     

@@ -188,7 +188,7 @@ class Employee extends \Phalcon\Mvc\Model
         $this->setSource("employee");
 
         $this->hasMany('id', 'RelatedTags', 'entity_id');
-         $this->hasMany('id', 'employee_project' , 'project_lead', ["alias" => "Employeeproject"]);
+        $this->hasMany('id', 'Employeeprojectrelation' , 'employee_id', ["alias" => "Employeeprojectrelation"]);
         $this->hasOne('id', 'EmployeeMeta', 'employee_id', ['alias' => 'EmployeeMetaData']);
     }
 

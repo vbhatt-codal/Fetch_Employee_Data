@@ -1,24 +1,31 @@
 <?php
 //namespace Learning\Models;
 use \Phalcon\Mvc\Model\Behavior\SoftDelete;
-use \Phalcon\Mvc\Model\Validator\Email as Email;
 /**
  * @SWG\Definition(definition="Employeeproject", type="object")
  */
 class Employeeproject extends \Phalcon\Mvc\Model
-{   
+{  
+
+     public function beforeValidationOnCreate()
+    {
+        $this->created_date = date("Y-m-d H:i:s");
+    } 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
         $this->setSource('employee_project'); 
-        $this->hasMany('project_lead', 'Employee' , 'id');
+        //$this->hasMany('project_lead', 'Employee' , 'id');
+        $this->hasMany('project_lead', 'Employeeprojectrelation' , 'project_code', ['alias' => 'Employeeprojectrelation']);
         $this->addBehavior(new SoftDelete([
             'field' => 'is_deleted',
             'value' => '1'
         ]));
     }
+
+    
 
     /**
      * Returns table name mapped in the model.
