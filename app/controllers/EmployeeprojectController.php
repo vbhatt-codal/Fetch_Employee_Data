@@ -56,7 +56,7 @@ class EmployeeprojectController extends ControllerBase
     /**
      * @SWG\Get(
      *     tags={"Employee"},
-     *     path="/Employeeproject/findbyid/{id}",
+     *     path="/project/{id}",
      *     description="Returns a Department based on a single ID",
      *     summary="Get Employee Project Deatils",
      *     operationId="GetEmployee",

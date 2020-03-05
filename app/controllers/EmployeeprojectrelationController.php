@@ -108,12 +108,19 @@ class EmployeeprojectrelationController extends ControllerBase
     /**
      * @SWG\Get(
      *     tags={"EmployeeProjectRelation"},
-     *     path="/Employeeprojectrelation/list/{id}",
+     *     path="/Employee/{id}/project",
      *     description="Returns all department from the system that the user has access to",
      *     summary="Get the employee project relation data",
      *     operationId="GetRelationData",
      *     produces={"application/json"},
-     *
+     *    @SWG\Parameter(
+     *     description="ID of Employee project",
+     *     in="path",
+     *     name="id",
+     *     required=true,
+     *     type="integer",
+     *     format="int64"
+     *   ),
      *     @SWG\Response(
      *         response=200,
      *         description="holiday response",
@@ -130,18 +137,17 @@ class EmployeeprojectrelationController extends ControllerBase
      *     )
      * )
      */
-    public function listAction()
-    {       $request = new Request();
-            // $id=$this->dispatcher->get('id');
-            $id =$this->request->getQuery('employee_id');
-            $project_code =$this->request->getQuery('project_code');
-            // $id = $this->request->getParam('id');
+    public function getprojectbyemployeeAction($id)
+    {             
+       
+            $request = new Request();
             
             $params = [
                 'models' => 'Employee'
             ];
 
-            $data = $this->getList($params,$id,$project_code);
+            $data = $this->getprojectList($params,$id); //getProject
+            //$data = $this->getEmployeeList($params,$id);
             if(isset($data))
             {
                 return $this->response->setJsonContent($data);
@@ -154,36 +160,114 @@ class EmployeeprojectrelationController extends ControllerBase
     }
    
 
-    public function getList($params, $id, $project_code)
-    {   
-           // print_r($id);die();
-
-        //--for decent o/p -- 1 - e - n - p
-        //SELECT employee.id,employee.employee_code,employee.user_name,employee_project.project_code, employee_project.project_name,employee_project.project_lead, employee_project.project_technology,employee_project_relation.id as relation_id,employee_project_relation.created_date, employee_project_relation.updated_date from employee JOIN employee_project ON employee.id = employee_project.project_lead JOIN employee_project_relation ON employee_project_relation.id = employee_project.project_lead WHERE employee.id = employee_project.project_lead AND employee_project_relation.id =1 
-        // $data = Employee::find($id);
-     
+    public function getprojectList($params, $id)
+    {       
+         
         $builder = new Builder($params);
         $builder->columns([
             //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
             "Employee.id,Employee.employee_code,Employee.user_name,Employeeproject.project_code, Employeeproject.project_name,Employeeproject.project_lead,Employeeproject.project_technology,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
         ]);
+        $builder->Join("Employeeprojectrelation", "Employee.id = Employeeprojectrelation.employee_id");
 
-        $builder->Join("Employeeproject","Employee.id =Employeeproject.project_lead");
-        $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.id = Employeeproject.project_lead")->where("Employee.id = Employeeprojectrelation.id");//->andWhere("Employeeprojectrelation.employee_id = 1");
+        $builder->Join("Employeeproject","Employeeprojectrelation.project_code =Employeeproject.project_code");
        
        if(isset($id)) {
-            $builder->andWhere("Employeeprojectrelation.employee_id = ".$id);
+            $builder->where("Employee.id = ".$id);
         }  
-        elseif (isset($project_code)) {
-           $builder->andWhere("Employeeproject.project_code = ".$project_code); 
-         } 
          else
          {
-            echo "improper id please enter any 1 id";
+            echo "improper id please enter any integer type id";
          }
 
           $data = $builder->getQuery()->execute()->toArray();
           return $data;
     
     }
+
+
+
+ /**
+     * @SWG\Get(
+     *     tags={"EmployeeProjectRelation"},
+     *     path="/Project/{id}/employee",
+     *     description="Returns all department from the system that the user has access to",
+     *     summary="Get the employee project relation data",
+     *     operationId="GetRelationData",
+     *     produces={"application/json"},
+     *    @SWG\Parameter(
+     *     description="ID of Employee project",
+     *     in="path",
+     *     name="id",
+     *     required=true,
+     *     type="integer",
+     *     format="int64"
+     *   ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="holiday response",
+     *         @SWG\Schema(ref="#/definitions/Employeeprojectrelation")
+     *     ),
+     *     @SWG\Response(
+     *         response="403",
+     *         description="Not Authorized Invalid or missing Authentication header"
+     *     ),
+     *     @SWG\Response(
+     *         response=500,
+     *         description="unexpected error",
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
+     *     )
+     * )
+     */
+    public function getemployeebyprojectAction($project_code)
+    {             
+        // echo $id;exit;
+            $request = new Request();
+           
+            
+            $params = [
+                'models' => 'Employee'
+            ];
+
+            $data = $this->getemployeeList($params,$project_code); //getProject
+            //$data = $this->getEmployeeList($params,$id);
+            if(isset($data))
+            {
+                return $this->response->setJsonContent($data);
+            }
+            else
+            {
+                return $this->sendForbidden();
+            }
+        
+    }
+   
+
+    public function getemployeeList($params, $project_code)
+    {       
+         
+        $builder = new Builder($params);
+        $builder->columns([
+            //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
+            "Employeeproject.project_code, Employeeproject.project_name,Employeeproject.project_lead,Employeeproject.project_technology,Employee.id,Employee.employee_code,Employee.user_name,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
+         ]);
+         $builder->Join("Employeeproject","Employee.id =Employeeproject.project_lead");
+        $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.id = Employeeproject.project_lead")->where("Employee.id = Employeeprojectrelation.id");
+       
+       
+       if(isset($project_code)) {
+            $builder->where("Employeeproject.project_code = ".$project_code);
+        }  
+         else
+         {
+            echo "improper id please enter any integer type id";
+         }
+
+          $data = $builder->getQuery()->execute()->toArray();
+          return $data;
+    
+    }
+
+
+    
  }   
