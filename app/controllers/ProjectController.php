@@ -2,7 +2,7 @@
 
 
 /**
-  * @SWG\Definition(definition="Employeeproject", type="object",
+  * @SWG\Definition(definition="Project", type="object",
   *     @SWG\Property(property="project_code", type="string"),
   *     @SWG\Property(property="project_name", type="string"),
   *     @SWG\Property(property="start_date", type="string"),
@@ -17,14 +17,14 @@ use Phlacon\Mvc\Model;
 use Phalcon\Mvc\Model\Query\Builder;
 
 
-class EmployeeprojectController extends ControllerBase
+class ProjectController extends ControllerBase
 {
     
     /**
      * @SWG\Get(
-     *     tags={"Employee"},
-     *     path="/Employeeproject/index",
-     *     description="Returns a Department based on a single ID",
+     *     tags={"Project"},
+     *     path="/Project/index",
+     *     description="Returns a Employee Projects details based on a single ID",
      *     summary="Get Employee Project Deatils",
      *     operationId="GetEmployee",
      *     consumes={"application/json"},
@@ -32,7 +32,7 @@ class EmployeeprojectController extends ControllerBase
      *     @SWG\Response(
      *         response=200,
      *         description="department response",
-               @SWG\Schema(ref="#/definitions/Employeeproject")
+               @SWG\Schema(ref="#/definitions/Project")
      *     ),
      *     @SWG\Response(
      *         response="403",
@@ -46,7 +46,7 @@ class EmployeeprojectController extends ControllerBase
      */
     public function indexAction()
     {
-        $employee = Employeeproject::find([
+        $employee = Project::find([
             //"conditions" => "is_deleted=0",
             'is_deleted is NULL'
         ]);
@@ -55,9 +55,9 @@ class EmployeeprojectController extends ControllerBase
 
     /**
      * @SWG\Get(
-     *     tags={"Employee"},
+     *     tags={"Project"},
      *     path="/project/{id}",
-     *     description="Returns a Department based on a single ID",
+     *     description="Returns a Project based on a single ID",
      *     summary="Get Employee Project Deatils",
      *     operationId="GetEmployee",
      *     consumes={"application/json"},
@@ -73,7 +73,7 @@ class EmployeeprojectController extends ControllerBase
      *     @SWG\Response(
      *         response=200,
      *         description="department response",
-               @SWG\Schema(ref="#/definitions/Employeeproject")
+     *          @SWG\Schema(ref="#/definitions/Project")
      *     ),
      *     @SWG\Response(
      *         response="403",
@@ -87,13 +87,13 @@ class EmployeeprojectController extends ControllerBase
      */
     public function findbyidAction($project_code)
     {
-        $employee = Employeeproject::findFirst($project_code);
+        $employee = Project::findFirst($project_code);
         return $this->response->setJsonContent($employee);
     }
 
      /**
-     * @SWG\Post(path="/Employeeproject/create",
-     *   tags={"Employee"},
+     * @SWG\Post(path="/Project/create",
+     *   tags={"Project"},
      *   summary="Create a new Employee Project",
      *   description="create new employee",
      *   summary="create employee",
@@ -153,8 +153,8 @@ class EmployeeprojectController extends ControllerBase
     
 
     /**
-     * @SWG\Put(path="/Employeeproject/update/{id}",
-     *   tags={"Employee"},
+     * @SWG\Put(path="/Project/update/{id}",
+     *   tags={"Project"},
      *   summary="Update an existing employee project details",
      *   description="Update existing employee project details",
      *   operationId="UpdateEmployee",
@@ -167,13 +167,14 @@ class EmployeeprojectController extends ControllerBase
      *     required=true,
      *     type="integer",
      *     format="int64"
+     *     @SWG\Schema(ref="#/definitions/Employeeprojectrelation")
      *   ),
      *   @SWG\Parameter(
      *     in="body",
      *     name="body",
      *     description="Employee project details",
      *     required=false,
-     *     @SWG\Schema(ref="#/definitions/Employeeproject")
+     *     @SWG\Schema(ref="#/definitions/Project")
      *   ),
      *   @SWG\Response(
      *     response="default",
@@ -202,7 +203,7 @@ class EmployeeprojectController extends ControllerBase
     {
         $data =$this->request->getJsonRawBody();
 
-        $employee = Employeeproject::findFirst($project_code);
+        $employee = Project::findFirst($project_code);
 
         $employee->project_name = $data->project_name;
         $employee->start_date = $data->start_date;
@@ -227,8 +228,8 @@ class EmployeeprojectController extends ControllerBase
 
      /**
      * @SWG\Delete(
-     *     tags={"Employee"},
-     *     path="/Employeeproject/delete/{id}",
+     *     tags={"Project"},
+     *     path="/Project/delete/{id}",
      *     description="deletes a single Employee project record based on the ID",
      *     summary="delete Employee",
      *     operationId="DeleteEmployee",
@@ -263,7 +264,7 @@ class EmployeeprojectController extends ControllerBase
     public function deleteAction($project_code)
       {
 
-        $employee = Employeeproject::findFirst($project_code);
+        $employee = Project::findFirst($project_code);
 
         if($employee->delete())
         {

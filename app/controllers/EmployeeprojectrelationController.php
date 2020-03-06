@@ -166,11 +166,11 @@ class EmployeeprojectrelationController extends ControllerBase
         $builder = new Builder($params);
         $builder->columns([
             //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
-            "Employee.id,Employee.employee_code,Employee.user_name,Employeeproject.project_code, Employeeproject.project_name,Employeeproject.project_lead,Employeeproject.project_technology,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
+            "Employee.id,Employee.employee_code,Employee.user_name,Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
         ]);
         $builder->Join("Employeeprojectrelation", "Employee.id = Employeeprojectrelation.employee_id");
 
-        $builder->Join("Employeeproject","Employeeprojectrelation.project_code =Employeeproject.project_code");
+        $builder->Join("Project","Employeeprojectrelation.project_code =Project.project_code");
        
        if(isset($id)) {
             $builder->where("Employee.id = ".$id);
@@ -249,15 +249,15 @@ class EmployeeprojectrelationController extends ControllerBase
         $builder = new Builder($params);
         $builder->columns([
             //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
-            "Employeeproject.project_code, Employeeproject.project_name,Employeeproject.project_lead,Employeeproject.project_technology,Employee.id,Employee.employee_code,Employee.user_name,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
+            "Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Employee.id,Employee.employee_code,Employee.user_name,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
          ]);
-         $builder->Join("Employeeproject","Employee.id =Employeeproject.project_lead");
-        $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.id = Employeeproject.project_lead")->where("Employee.id = Employeeprojectrelation.id");
+         $builder->Join("Project","Employee.id =Project.project_lead");
+        $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.id = Project.project_lead")->where("Employee.id = Employeeprojectrelation.id");
        
        
        if(isset($project_code)) {
-            $builder->where("Employeeproject.project_code = ".$project_code);
-        }  
+            $builder->where("Project.project_code = ".$project_code);
+               }  
          else
          {
             echo "improper id please enter any integer type id";
@@ -267,7 +267,6 @@ class EmployeeprojectrelationController extends ControllerBase
           return $data;
     
     }
-
 
     
  }   

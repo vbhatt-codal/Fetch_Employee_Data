@@ -2,9 +2,9 @@
 //namespace Learning\Models;
 use \Phalcon\Mvc\Model\Behavior\SoftDelete;
 /**
- * @SWG\Definition(definition="Employeeproject", type="object")
+ * @SWG\Definition(definition="Project", type="object")
  */
-class Employeeproject extends \Phalcon\Mvc\Model
+class Project extends \Phalcon\Mvc\Model
 {  
 
      public function beforeValidationOnCreate()
@@ -16,7 +16,7 @@ class Employeeproject extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->setSource('employee_project'); 
+        $this->setSource('project'); 
         //$this->hasMany('project_lead', 'Employee' , 'id');
         $this->hasMany('project_lead', 'Employeeprojectrelation' , 'project_code', ['alias' => 'Employeeprojectrelation']);
         $this->addBehavior(new SoftDelete([
@@ -33,7 +33,7 @@ class Employeeproject extends \Phalcon\Mvc\Model
      * @return string
      */
     public function getSource() {
-        return 'employee_project';
+        return 'project';
     }
     
 
