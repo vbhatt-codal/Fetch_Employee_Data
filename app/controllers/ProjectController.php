@@ -161,15 +161,6 @@ class ProjectController extends ControllerBase
      *   consumes={"application/json"},
      *   produces={"application/json"},
      *   @SWG\Parameter(
-     *     description="ID of Employee project",
-     *     in="path",
-     *     name="id",
-     *     required=true,
-     *     type="integer",
-     *     format="int64"
-     *     @SWG\Schema(ref="#/definitions/Employeeprojectrelation")
-     *   ),
-     *   @SWG\Parameter(
      *     in="body",
      *     name="body",
      *     description="Employee project details",
@@ -266,7 +257,7 @@ class ProjectController extends ControllerBase
 
         $employee = Project::findFirst($project_code);
 
-        if($employee->delete())
+        if(!$employee->delete())
         {
            return $this->response->setJsonContent($employee);
            return "Data not deleted";

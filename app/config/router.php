@@ -21,12 +21,12 @@ $router->addPost('/:controller/', array(
     'action'     => "create"
 ));
 
-$router->addPut('/:controller/{id:[0-9]+}', array(
+$router->addPut('/:controller/update/{id:[0-9]+}', array(
     'controller' => 1,
     'action'     => "update"
 ));
 
-$router->addDelete('/:controller/{id:[0-9]+}', array(
+$router->addDelete('/:controller/delete/{id:[0-9]+}', array(
     'controller' => 1,
     'action'     => "delete"
 ));
