@@ -168,10 +168,13 @@ class EmployeeprojectrelationController extends ControllerBase
             //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
             "Employee.id,Employee.employee_code,Employee.user_name,Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
         ]);
-        $builder->Join("Employeeprojectrelation", "Employee.id = Employeeprojectrelation.employee_id");
 
-        $builder->Join("Project","Employeeprojectrelation.project_code =Project.project_code");
-       
+         $builder->Join("Project","Employee.id =Project.project_lead");
+        $builder->Join("Employeeprojectrelation", "Project.project_lead =Employeeprojectrelation.id")->where('Employee.id = Project.project_lead');
+        
+       // $builder->Join("Project","Employeeprojectrelation.project_code =Project.project_code");
+
+
        if(isset($id)) {
             $builder->where("Employee.id = ".$id);
         }  
@@ -184,8 +187,6 @@ class EmployeeprojectrelationController extends ControllerBase
           return $data;
     
     }
-
-
 
  /**
      * @SWG\Get(
@@ -245,7 +246,7 @@ class EmployeeprojectrelationController extends ControllerBase
 
     public function getemployeeList($params, $project_code)
     {       
-         
+        //SELECT employee.id,employee.employee_code,employee.user_name,employee.first_name,employee.last_name,employee.email,employee.position, employee_project.project_name,employee_project.start_date,employee_project.end_date,employee_project.project_lead, employee_project.project_technology,employee_project_relation.id as relation_id,employee_project_relation.created_date, employee_project_relation.updated_date from employee JOIN employee_project ON employee.id = employee_project.project_lead JOIN employee_project_relation ON employee_project_relation.id = employee_project.project_lead WHERE employee.id = employee_project.project_lead 
         $builder = new Builder($params);
         $builder->columns([
             //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
@@ -256,7 +257,7 @@ class EmployeeprojectrelationController extends ControllerBase
        
        
        if(isset($project_code)) {
-            $builder->where("Project.project_code = ".$project_code);
+            $builder->where("Project.project_lead = ".$project_code);
                }  
          else
          {

@@ -48,7 +48,7 @@ class ProjectController extends ControllerBase
     {
         $employee = Project::find([
             "conditions" => "is_deleted=0",
-           // 'is_deleted is ' //'is_deleted is NULL'
+           //'is_deleted is NULL'
         ]);
         return $this->response->setJsonContent($employee);
     }
