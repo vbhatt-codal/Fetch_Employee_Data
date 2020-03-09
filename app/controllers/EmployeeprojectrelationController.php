@@ -246,18 +246,18 @@ class EmployeeprojectrelationController extends ControllerBase
 
     public function getemployeeList($params, $project_code)
     {       
-        //SELECT employee.id,employee.employee_code,employee.user_name,employee.first_name,employee.last_name,employee.email,employee.position, employee_project.project_name,employee_project.start_date,employee_project.end_date,employee_project.project_lead, employee_project.project_technology,employee_project_relation.id as relation_id,employee_project_relation.created_date, employee_project_relation.updated_date from employee JOIN employee_project ON employee.id = employee_project.project_lead JOIN employee_project_relation ON employee_project_relation.id = employee_project.project_lead WHERE employee.id = employee_project.project_lead 
+        //SELECT employee.id,employee.employee_code,employee.user_name,employee_project.project_code, employee_project.project_name,employee_project.project_lead, employee_project.project_technology,employee_project_relation.id as relation_id,employee_project_relation.created_date, employee_project_relation.updated_date from employee JOIN employee_project ON employee.id = employee_project.project_lead JOIN employee_project_relation ON employee_project_relation.id = employee_project.project_lead WHERE employee.id = employee_project.project_lead AND employee_project.project_code =3 
         $builder = new Builder($params);
         $builder->columns([
             //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
             "Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Employee.id,Employee.employee_code,Employee.user_name,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
          ]);
          $builder->Join("Project","Employee.id =Project.project_lead");
-        $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.id = Project.project_lead")->where("Employee.id = Employeeprojectrelation.id");
+        $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.id = Project.project_lead")->where("Employee.id = Project.project_lead");
        
        
        if(isset($project_code)) {
-            $builder->where("Project.project_lead = ".$project_code);
+            $builder->where("Project.project_code = ".$project_code);
                }  
          else
          {
