@@ -17,7 +17,7 @@ class Employeeprojectrelation extends \Phalcon\Mvc\Model
     {
         $this->setSource('employee_project_relation'); 
          $this->belongsTo("employee_id", "Employee", "id", ['alias' => 'Employee']);
-        $this->belongsTo("project_code", "Employeeproject", "project_lead", ['alias' => 'Employeeproject']);
+        $this->belongsTo("project_code", "Project", "project_lead", ['alias' => 'Employeeproject']);
     }
 
     

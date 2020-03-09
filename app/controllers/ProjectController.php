@@ -47,8 +47,8 @@ class ProjectController extends ControllerBase
     public function indexAction()
     {
         $employee = Project::find([
-            //"conditions" => "is_deleted=0",
-            'is_deleted is NULL'
+            "conditions" => "is_deleted=0",
+           // 'is_deleted is ' //'is_deleted is NULL'
         ]);
         return $this->response->setJsonContent($employee);
     }
@@ -105,7 +105,7 @@ class ProjectController extends ControllerBase
      *     name="body",
      *     description="insert record",
      *     required=false,
-     *     @SWG\Schema(ref="#/definitions/Employeeproject")
+     *     @SWG\Schema(ref="#/definitions/Project")
      *   ),
      *   @SWG\Response(
      *     response="default",
@@ -129,7 +129,7 @@ class ProjectController extends ControllerBase
     {
         $data =$this->request->getJsonRawBody();
         // print_r($data->project_code);die;
-    	$employee = new Employeeproject();
+    	$employee = new Project();
         $employee->project_code = $data->project_code;
         $employee->project_name = $data->project_name;
         $employee->start_date = $data->start_date;
