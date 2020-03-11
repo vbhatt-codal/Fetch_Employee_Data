@@ -93,7 +93,6 @@ class EmployeeprojectrelationController extends ControllerBase
         $employee->employee_id = $data->employee_id;
         $employee->updated_date = $data->updated_date;
         $employee->created_date = $data->created_date;
-
         if (!$employee->create()) 
          {
             return $this->response->setJsonContent("Data Not Inserted.");
@@ -165,9 +164,9 @@ class EmployeeprojectrelationController extends ControllerBase
          
         $builder = new Builder($params);
         $builder->columns([
-            //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
-            "Employee.id,Employee.employee_code,Employee.user_name,Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
-        ]);
+           // "Employee.*,Project.*,Employeeprojectrelation.*"
+             "Employee.id,Employee.employee_code,Employee.user_name,Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
+         ]);
 
          $builder->Join("Project","Employee.id =Project.project_lead");
         $builder->Join("Employeeprojectrelation", "Project.project_lead =Employeeprojectrelation.id")->where('Employee.id = Project.project_lead');

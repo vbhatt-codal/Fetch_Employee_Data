@@ -1,6 +1,5 @@
 <?php 
 
-
 /**
   * @SWG\Definition(definition="Project", type="object",
   *     @SWG\Property(property="project_code", type="string"),
@@ -19,13 +18,13 @@ use Phalcon\Mvc\Model\Query\Builder;
 
 class ProjectController extends ControllerBase
 {
-    
+
     /**
      * @SWG\Get(
      *     tags={"Project"},
      *     path="/Project/index",
-     *     description="Returns a Employee Projects details based on a single ID",
-     *     summary="Get Employee Project Deatils",
+     *     description="Returns a Projects details based on a single ID",
+     *     summary="Get Project Deatils",
      *     operationId="GetEmployee",
      *     consumes={"application/json"},
      *     produces={"application/json"},
@@ -58,12 +57,12 @@ class ProjectController extends ControllerBase
      *     tags={"Project"},
      *     path="/project/{id}",
      *     description="Returns a Project based on a single ID",
-     *     summary="Get Employee Project Deatils",
+     *     summary="Get Project Deatils",
      *     operationId="GetEmployee",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *   @SWG\Parameter(
-     *     description="ID of Employee project",
+     *     description="ID of project",
      *     in="path",
      *     name="id",
      *     required=true,
@@ -72,7 +71,7 @@ class ProjectController extends ControllerBase
      *   ),
      *     @SWG\Response(
      *         response=200,
-     *         description="department response",
+     *         description="Project response",
      *          @SWG\Schema(ref="#/definitions/Project")
      *     ),
      *     @SWG\Response(
@@ -92,11 +91,11 @@ class ProjectController extends ControllerBase
     }
 
      /**
-     * @SWG\Post(path="/Project/create",
+     * @SWG\Post(path="/Project/save",
      *   tags={"Project"},
-     *   summary="Create a new Employee Project",
-     *   description="create new employee",
-     *   summary="create employee",
+     *   summary="Create a new  Project",
+     *   description="create new project",
+     *   summary="Add Project Details",
      *   operationId="CreateEmployee",
      *   consumes={"application/json"},
      *   produces={"application/json"},
@@ -125,45 +124,57 @@ class ProjectController extends ControllerBase
      *   )
      * )
      */
-    public function createAction()
+    public function saveAction()
     {
         $data =$this->request->getJsonRawBody();
         // print_r($data->project_code);die;
     	$employee = new Project();
+
+        // var_dump($employee);exit;
         $employee->project_code = $data->project_code;
         $employee->project_name = $data->project_name;
         $employee->start_date = $data->start_date;
         $employee->end_date = $data->end_date;
         $employee->project_lead = $data->project_lead;
         $employee->project_technology = $data->project_technology;
-        $employee->updated_date = $data->updated_date;
-        $employee->created_date = $data->created_date;
-
-        if (!$employee->create()) 
+        $employee->update_date = $data->updated_date;
+        $employee->create_date = $data->created_date;
+        $employee->is_deleted = 0;
+         // print_r($employee);exit;
+         if (!$employee->save()) 
          {
-            return $this->response->setJsonContent("Data Not Inserted.");
+            return $this->response->setJsonContent("record not inserted");
          }
         else
          {  
             // echo json_encode($employee);
             return $this->response->setJsonContent($employee);
+          
          }
      
     }
     
 
     /**
-     * @SWG\Put(path="/Project/update/{id}",
+     * @SWG\Put(path="/Project/{id}",
      *   tags={"Project"},
-     *   summary="Update an existing employee project details",
-     *   description="Update existing employee project details",
+     *   summary="Update an existing  project details",
+     *   description="Update existing  project details",
      *   operationId="UpdateEmployee",
      *   consumes={"application/json"},
      *   produces={"application/json"},
+      *    @SWG\Parameter(
+     *     description="ID of Employee project",
+     *     in="path",
+     *     name="id",
+     *     required=true,
+     *     type="integer",
+     *     format="int64"
+     *   ),
      *   @SWG\Parameter(
      *     in="body",
      *     name="body",
-     *     description="Employee project details",
+     *     description="Update project details",
      *     required=false,
      *     @SWG\Schema(ref="#/definitions/Project")
      *   ),
@@ -195,7 +206,7 @@ class ProjectController extends ControllerBase
         $data =$this->request->getJsonRawBody();
 
         $employee = Project::findFirst($project_code);
-
+        
         $employee->project_name = $data->project_name;
         $employee->start_date = $data->start_date;
         $employee->end_date = $data->end_date;
@@ -206,8 +217,7 @@ class ProjectController extends ControllerBase
 
         if (!$employee->update()) 
          {
-            return $this->response->setJsonContent($employee);
-            return "Data not updated";
+            return $this->response->setJsonContent("Data not updated");
          }
         else
          {  
@@ -220,13 +230,13 @@ class ProjectController extends ControllerBase
      /**
      * @SWG\Delete(
      *     tags={"Project"},
-     *     path="/Project/delete/{id}",
-     *     description="deletes a single Employee project record based on the ID",
-     *     summary="delete Employee",
+     *     path="/Project/{id}",
+     *     description="deletes a single  project record based on the ID",
+     *     summary="delete Project data",
      *     operationId="DeleteEmployee",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         description="ID of Employee to delete",
+     *         description="ID of Project data to delete",
      *         format="int64",
      *         in="path",
      *         name="id",
@@ -235,7 +245,7 @@ class ProjectController extends ControllerBase
      *     ),
      *     @SWG\Response(
      *         response=204,
-     *         description="Department deleted",
+     *         description="Project Record deleted",
      *         @SWG\Schema(type="null")
      *     ),
      *     @SWG\Response(
@@ -259,8 +269,7 @@ class ProjectController extends ControllerBase
 
         if(!$employee->delete())
         {
-           return $this->response->setJsonContent($employee);
-           return "Data not deleted";
+           return $this->response->setJsonContent("Data not deleted");
          }
         else
         {  

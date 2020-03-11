@@ -5,7 +5,8 @@ use Phalcon\Mvc\Router;
 
 //$router = $di->getRouter();
 
-// ----------Employee_project CRUD route----------
+
+// ----------Project CRUD route----------
 $router->addGet('/:controller/', array(
     'controller' => 1,
     'action'     => "index"
@@ -16,20 +17,20 @@ $router->addGet('/project/{id:[0-9]+}', array(
     'action'     => "findbyid"
 ));
 
-$router->addPost('/:controller/', array(
+$router->addPost('/controller:([a-zA-Z0-9\_\-]+)/([a-zA-Z0-9_-]+)', array(
     'controller' => 1,
-    'action'     => "create"
+    'action'     => "save"
 ));
 
-$router->addPut('/:controller/update/{id:[0-9]+}', array(
+$router->addPut('/{controller:([a-zA-Z0-9\_\-]+)}/{id:([a-zA-Z0-9-_]+)}', array(
     'controller' => 1,
-    'action'     => "update"
-));
+    'action'     => "update",
+ ));
 
-$router->addDelete('/:controller/delete/{id:[0-9]+}', array(
+$router->addDelete('/{controller:([a-zA-Z0-9\_\-]+)}/{id:([a-zA-Z0-9-_]+)}', array(
     'controller' => 1,
-    'action'     => "delete"
-));
+    'action'     => "delete",
+ ));
 
 
 //-----------Employee_project relation------------
@@ -39,9 +40,18 @@ $router->addGet('/:controller/', array(
 ));
 
 $router->addPost('/:controller/', array(
-    'controller' => 1,
+    'controller' => "Employeeprojectrelation",
     'action'     => "createrelation"
 ));
+// $router->addPut('/:controller/update/{id:[0-9]+}', array(
+//     'controller' => 1,
+//     'action'     => "update"
+// // ));
+
+// $router->addDelete('/:controller/delete/{id:[0-9]+}', array(
+//     'controller' => 1,
+//     'action'     => "delete"
+// ));
 //employee/id/project
 $router->addGet('/Employee/{id:[0-9]+}/project', array(
     'controller'    => "Employeeprojectrelation",

@@ -1,41 +1,12 @@
 <?php
 //namespace Learning\Models;
+use \Phalcon\Mvc\Model;
 use \Phalcon\Mvc\Model\Behavior\SoftDelete;
 /**
  * @SWG\Definition(definition="Project", type="object")
  */
 class Project extends \Phalcon\Mvc\Model
 {  
-
-     public function beforeValidationOnCreate()
-    {
-        $this->created_date = date("Y-m-d H:i:s");
-    } 
-    /**
-     * Initialize method for model.
-     */
-    public function initialize()
-    {
-        $this->setSource('project'); 
-        //$this->hasMany('project_lead', 'Employee' , 'id');
-        $this->hasMany('project_lead', 'Employeeprojectrelation' , 'project_code', ['alias' => 'Employeeprojectrelation']);
-        $this->addBehavior(new SoftDelete([
-            'field' => 'is_deleted',
-            'value' => '1'
-        ]));
-    }
-
-    
-
-    /**
-     * Returns table name mapped in the model.
-     *
-     * @return string
-     */
-    public function getSource() {
-        return 'project';
-    }
-    
 
     /**
      *
@@ -93,15 +64,53 @@ class Project extends \Phalcon\Mvc\Model
      * @Column(column="update_date", type="timestamp", nullable=false)
      * @SWG\Property(property="update_date", type="string")
      */
-    public $updated_date;
-    
+    public $update_date;
+    /**
+     *
+     * @var integer
+     * @Column(column="is_deleted", type="integer", length=11, nullable=false)
+      * @SWG\Property(property="is_deleted", type="integer")
+     */
+    public $is_deleted;
     /**
      *
      * @var timestamp
      * @Column(column="created_date", type="timestamp", nullable=false)
      * @SWG\Property(property="created_date", type="string")
      */
-    public $created_date;
+    public $create_date;
+
+    /**
+     * Initialize method for model.
+     */
+    public function initialize()
+    {
+        $this->setSource('project'); 
+        $this->hasMany('project_lead', 'Employee' , 'id');
+        $this->hasMany('project_lead', 'Employeeprojectrelation' , 'project_code', ['alias' => 'Employeeprojectrelation']);
+        $this->addBehavior(new \Phalcon\Mvc\Model\Behavior\SoftDelete([
+            'field' => 'is_deleted',
+            'value' => '1'
+        ]));
+    }
+
+
+     public function beforeValidationOnCreate()
+    {
+        $this->created_date = date("Y-m-d H:i:s");
+    } 
+    
+
+    /**
+     * Returns table name mapped in the model.
+     *
+     * @return string
+     */
+    public function getSource() {
+        return 'project';
+    }
+    
+
     
     /**
      * Allows to query a set of records that match the specified conditions
@@ -112,4 +121,8 @@ class Project extends \Phalcon\Mvc\Model
     {
         return parent::find($parameters);
     }
+    //  public static function findFirst($parameters = null)
+    // {
+    //     return parent::findFirst($parameters);
+    // }
 }
