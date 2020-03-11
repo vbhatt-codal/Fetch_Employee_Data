@@ -104,6 +104,129 @@ class EmployeeprojectrelationController extends ControllerBase
          }
      
     }
+
+     /**
+     * @SWG\Put(path="/EmployeeProjectRelation/update/{id}",
+     *   tags={"EmployeeProjectRelation"},
+     *   summary="Update an existing employee project details",
+     *   description="Update existing employee project details",
+     *   operationId="Update Relation Detials",
+     *   consumes={"application/json"},
+     *   produces={"application/json"},
+      *    @SWG\Parameter(
+     *     description="ID of Employee Project Relation",
+     *     in="path",
+     *     name="id",
+     *     required=true,
+     *     type="integer",
+     *     format="int64"
+     *   ),
+     *   @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Update Employee Project Relation details",
+     *     required=false,
+     *     @SWG\Schema(ref="#/definitions/Employeeprojectrelation")
+     *   ),
+     *   @SWG\Response(
+     *     response="default",
+     *     description="successful operation",
+     *   ),
+     *   @SWG\Response(
+     *         response="400",
+     *         description="Invalid data supplied",
+     *   ),
+     *   @SWG\Response(
+     *         response="403",
+     *         description="Not Authorized Invalid or missing Authorization header",
+     *   ),
+     *   @SWG\Response(
+     *         response="404",
+     *         description="ID Not Found",
+     *   ),
+     *   @SWG\Response(
+     *         response="500",
+     *         description="unexpected error",
+     *   )
+     * )
+     */
+
+    public function updateAction($id)
+    {
+        $data =$this->request->getJsonRawBody();
+
+        $employee = Employeeprojectrelation::findFirst($id);
+        
+        $employee->project_code = $data->project_code;
+        $employee->employee_id = $data->employee_id;
+        $employee->created_date = $data->created_date;
+        $employee->updated_date = $data->updated_date;
+
+        if (!$employee->update()) 
+         {
+            return $this->response->setJsonContent("Data not updated");
+         }
+        else
+         {  
+            // echo json_encode($employee);
+            return $this->response->setJsonContent($employee);
+         }
+           
+    }
+
+     /**
+     * @SWG\Delete(
+     *     tags={"EmployeeProjectRelation"},
+     *     path="/Employeeprojectrelation/delete/{id}",
+     *     description="deletes a single relation record based on the ID",
+     *     summary="delete Relation data",
+     *     operationId="Delete Employee Project Relation",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         description="ID of relation data to be delete",
+     *         format="int64",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(
+     *         response=204,
+     *         description="Relation Record deleted",
+     *         @SWG\Schema(type="null")
+     *     ),
+     *     @SWG\Response(
+     *         response="403",
+     *         description="Not Authorized Invalid or missing Authorization header",
+     *     ),
+     *   @SWG\Response(
+     *         response="404",
+     *         description="ID Not Found",
+     *   ),
+     *     @SWG\Response(
+     *         response="500",
+     *         description="unexpected error",
+     *     )
+     * )
+     */
+    public function deleteAction($id)
+      {
+
+        $employee = Employeeprojectrelation::findFirst($id);
+
+        if(!$employee->delete())
+        {
+           return $this->response->setJsonContent("Data not deleted");
+         }
+        else
+        {  
+            // echo json_encode($employee);
+           return $this->response->setJsonContent($employee);
+        } 
+
+      }
+
+
     /**
      * @SWG\Get(
      *     tags={"EmployeeProjectRelation"},

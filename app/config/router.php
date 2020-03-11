@@ -43,15 +43,15 @@ $router->addPost('/:controller/', array(
     'controller' => "Employeeprojectrelation",
     'action'     => "createrelation"
 ));
-// $router->addPut('/:controller/update/{id:[0-9]+}', array(
-//     'controller' => 1,
-//     'action'     => "update"
-// // ));
+$router->addPut('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0-9-_]+)}', array(
+    'controller' => 1,
+    'action'     => "update",
+ ));
 
-// $router->addDelete('/:controller/delete/{id:[0-9]+}', array(
-//     'controller' => 1,
-//     'action'     => "delete"
-// ));
+$router->addDelete('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0-9-_]+)}', array(
+    'controller' => 1,
+    'action'     => "delete",
+ ));
 //employee/id/project
 $router->addGet('/Employee/{id:[0-9]+}/project', array(
     'controller'    => "Employeeprojectrelation",
