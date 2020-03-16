@@ -6,7 +6,7 @@ use Phalcon\Mvc\Router;
 //$router = $di->getRouter();
 
 
-// ----------Project CRUD route----------
+// ----------Project CRUD routes----------
 $router->addGet('/:controller/', array(
     'controller' => 1,
     'action'     => "index"
@@ -33,7 +33,7 @@ $router->addDelete('/{controller:([a-zA-Z0-9\_\-]+)}/{id:([a-zA-Z0-9-_]+)}', arr
  ));
 
 
-//-----------Employee_project relation------------
+//-----------Employee_project relation CRUD routes------------
 $router->addGet('/:controller/', array(
     'controller' => 1,
     'action'     => "indexrelation"

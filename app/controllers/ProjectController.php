@@ -2,14 +2,14 @@
 
 /**
   * @SWG\Definition(definition="Project", type="object",
-  *     @SWG\Property(property="project_code", type="string"),
+  *     @SWG\Property(property="project_code", type="integer"),
   *     @SWG\Property(property="project_name", type="string"),
   *     @SWG\Property(property="start_date", type="string"),
   *     @SWG\Property(property="end_date", type="string"),
-  *     @SWG\Property(property="project_lead", type="string"),
+  *     @SWG\Property(property="project_lead", type="integer"),
   *     @SWG\Property(property="project_technology", type="string"),
-  *     @SWG\Property(property="updated_date", type="string"),
-  *     @SWG\Property(property="created_date", type="string"),
+  *     @SWG\Property(property="update_date", type="string"),
+  *     @SWG\Property(property="create_date", type="string"),
   * )
  */
 use Phlacon\Mvc\Model;
@@ -31,7 +31,7 @@ class ProjectController extends ControllerBase
      *     @SWG\Response(
      *         response=200,
      *         description="department response",
-               @SWG\Schema(ref="#/definitions/Project")
+     *         @SWG\Schema(ref="#/definitions/Project")
      *     ),
      *     @SWG\Response(
      *         response="403",
@@ -84,7 +84,7 @@ class ProjectController extends ControllerBase
      *     )
      * )
      */
-    public function findbyidAction($project_code)
+    public function findByIdAction($project_code)
     {
         $employee = Project::findFirst($project_code);
         return $this->response->setJsonContent($employee);
@@ -127,21 +127,20 @@ class ProjectController extends ControllerBase
     public function saveAction()
     {
         $data =$this->request->getJsonRawBody();
-        // print_r($data->project_code);die;
+
     	$employee = new Project();
 
-        // var_dump($employee);exit;
         $employee->project_code = $data->project_code;
         $employee->project_name = $data->project_name;
         $employee->start_date = $data->start_date;
         $employee->end_date = $data->end_date;
         $employee->project_lead = $data->project_lead;
         $employee->project_technology = $data->project_technology;
-        $employee->update_date = $data->updated_date;
-        $employee->create_date = $data->created_date;
+        $employee->update_date = $data->update_date;
+        $employee->create_date = $data->create_date;
         $employee->is_deleted = 0;
-         // print_r($employee);exit;
-         if (!$employee->save()) 
+
+        if (!$employee->save()) 
          {
             return $this->response->setJsonContent("record not inserted");
          }
@@ -212,8 +211,8 @@ class ProjectController extends ControllerBase
         $employee->end_date = $data->end_date;
         $employee->project_lead = $data->project_lead;
         $employee->project_technology = $data->project_technology;
-        $employee->created_date = $data->created_date;
-        $employee->updated_date = $data->updated_date;
+        $employee->create_date = $data->create_date;
+        $employee->update_date = $data->update_date;
 
         if (!$employee->update()) 
          {
@@ -270,7 +269,7 @@ class ProjectController extends ControllerBase
         if(!$employee->delete())
         {
            return $this->response->setJsonContent("Data not deleted");
-         }
+        }
         else
         {  
             // echo json_encode($employee);

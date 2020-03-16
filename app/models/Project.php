@@ -68,7 +68,7 @@ class Project extends \Phalcon\Mvc\Model
     /**
      *
      * @var integer
-     * @Column(column="is_deleted", type="integer", length=11, nullable=false)
+     * @Column(column="is_deleted", type="tiny integer", length=1, nullable=false)
       * @SWG\Property(property="is_deleted", type="integer")
      */
     public $is_deleted;
@@ -95,7 +95,7 @@ class Project extends \Phalcon\Mvc\Model
     }
 
 
-     public function beforeValidationOnCreate()
+    public function beforeValidationOnCreate()
     {
         $this->created_date = date("Y-m-d H:i:s");
     } 

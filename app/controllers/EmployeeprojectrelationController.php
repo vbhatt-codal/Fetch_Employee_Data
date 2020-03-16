@@ -6,9 +6,9 @@ use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
 use Phalcon\Http\Request;
 /**
   * @SWG\Definition(definition="Employeeprojectrelation", type="object",
-  *     @SWG\Property(property="id", type="string"),
-  *     @SWG\Property(property="project_code", type="string"),
-  *     @SWG\Property(property="employee_id", type="string"),
+  *     @SWG\Property(property="id", type="integer"),
+  *     @SWG\Property(property="project_code", type="integer"),
+  *     @SWG\Property(property="employee_id", type="integer"),
   *     @SWG\Property(property="updated_date", type="string"),
   *     @SWG\Property(property="created_date", type="string"),
   * )
@@ -16,7 +16,7 @@ use Phalcon\Http\Request;
 
 class EmployeeprojectrelationController extends ControllerBase
 {
-    use MysqlControllerTrait;
+    // use MysqlControllerTrait;
      protected $id;
      protected $project_code;
     /**
@@ -86,7 +86,7 @@ class EmployeeprojectrelationController extends ControllerBase
     public function createrelationAction()
     {
         $data =$this->request->getJsonRawBody();
-        // print_r($data->project_code);die;
+       
         $employee = new Employeeprojectrelation();
         $employee->id = $data->id;
         $employee->project_code = $data->project_code;
@@ -94,14 +94,14 @@ class EmployeeprojectrelationController extends ControllerBase
         $employee->updated_date = $data->updated_date;
         $employee->created_date = $data->created_date;
         if (!$employee->create()) 
-         {
-            return $this->response->setJsonContent("Data Not Inserted.");
-         }
+        {
+             return $this->response->setJsonContent("Data Not Inserted.");
+        }
         else
-         {  
-            // echo json_encode($employee);
-            return $this->response->setJsonContent($employee);
-         }
+        {  
+        // echo json_encode($employee);
+             return $this->response->setJsonContent($employee);
+        }
      
     }
 
@@ -211,19 +211,16 @@ class EmployeeprojectrelationController extends ControllerBase
      */
     public function deleteAction($id)
       {
-
         $employee = Employeeprojectrelation::findFirst($id);
-
         if(!$employee->delete())
         {
            return $this->response->setJsonContent("Data not deleted");
-         }
+        }
         else
         {  
             // echo json_encode($employee);
            return $this->response->setJsonContent($employee);
         } 
-
       }
 
 
@@ -268,8 +265,7 @@ class EmployeeprojectrelationController extends ControllerBase
                 'models' => 'Employee'
             ];
 
-            $data = $this->getprojectList($params,$id); //getProject
-            //$data = $this->getEmployeeList($params,$id);
+            $data = $this->getprojectList($params,$id); 
             if(isset($data))
             {
                 return $this->response->setJsonContent($data);
@@ -290,27 +286,25 @@ class EmployeeprojectrelationController extends ControllerBase
            // "Employee.*,Project.*,Employeeprojectrelation.*"
              "Employee.id,Employee.employee_code,Employee.user_name,Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
          ]);
-
-         $builder->Join("Project","Employee.id =Project.project_lead");
+        $builder->Join("Project","Employee.id =Project.project_lead");
         $builder->Join("Employeeprojectrelation", "Project.project_lead =Employeeprojectrelation.id")->where('Employee.id = Project.project_lead');
         
-       // $builder->Join("Project","Employeeprojectrelation.project_code =Project.project_code");
 
-
-       if(isset($id)) {
+        if(isset($id))
+        {
             $builder->where("Employee.id = ".$id);
         }  
-         else
-         {
+        else
+        {
             echo "improper id please enter any integer type id";
-         }
+        }
 
-          $data = $builder->getQuery()->execute()->toArray();
-          return $data;
+        $data = $builder->getQuery()->execute()->toArray();
+        return $data;
     
     }
 
- /**
+    /**
      * @SWG\Get(
      *     tags={"EmployeeProjectRelation"},
      *     path="/Project/{id}/employee",
@@ -344,16 +338,13 @@ class EmployeeprojectrelationController extends ControllerBase
      */
     public function getemployeebyprojectAction($project_code)
     {             
-        // echo $id;exit;
             $request = new Request();
-           
-            
+    
             $params = [
                 'models' => 'Employee'
             ];
 
-            $data = $this->getemployeeList($params,$project_code); //getProject
-            //$data = $this->getEmployeeList($params,$id);
+            $data = $this->getemployeeList($params,$project_code); 
             if(isset($data))
             {
                 return $this->response->setJsonContent($data);
@@ -361,14 +352,12 @@ class EmployeeprojectrelationController extends ControllerBase
             else
             {
                 return $this->sendForbidden();
-            }
-        
+            }      
     }
    
 
     public function getemployeeList($params, $project_code)
     {       
-        //SELECT employee.id,employee.employee_code,employee.user_name,employee_project.project_code, employee_project.project_name,employee_project.project_lead, employee_project.project_technology,employee_project_relation.id as relation_id,employee_project_relation.created_date, employee_project_relation.updated_date from employee JOIN employee_project ON employee.id = employee_project.project_lead JOIN employee_project_relation ON employee_project_relation.id = employee_project.project_lead WHERE employee.id = employee_project.project_lead AND employee_project.project_code =3 
         $builder = new Builder($params);
         $builder->columns([
             //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
@@ -378,17 +367,17 @@ class EmployeeprojectrelationController extends ControllerBase
         $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.id = Project.project_lead")->where("Employee.id = Project.project_lead");
        
        
-       if(isset($project_code)) {
+        if(isset($project_code)) 
+        {
             $builder->where("Project.project_code = ".$project_code);
-               }  
-         else
-         {
+        }  
+        else
+        {
             echo "improper id please enter any integer type id";
-         }
+        }
 
-          $data = $builder->getQuery()->execute()->toArray();
-          return $data;
-    
+        $data = $builder->getQuery()->execute()->toArray();
+        return $data;
     }
 
     

@@ -38,7 +38,7 @@ class Employeeprojectrelation extends \Phalcon\Mvc\Model
      * @Primary
      * @Identity
      * @Column(column="project_code", type="integer", length=11, nullable=false)
-      * @SWG\Property(property="project_code", type="integer")
+     * @SWG\Property(property="project_code", type="integer")
      */
     public $project_code;
 
@@ -65,15 +65,15 @@ class Employeeprojectrelation extends \Phalcon\Mvc\Model
      * @Column(column="update_date", type="timestamp", nullable=false)
      * @SWG\Property(property="update_date", type="string")
      */
-    public $updated_date;
+    public $update_date;
     
     /**
      *
      * @var timestamp
      * @Column(column="created_date", type="timestamp", nullable=false)
-     * @SWG\Property(property="created_date", type="string")
+     * @SWG\Property(property="create_date", type="string")
      */
-    public $created_date;
+    public $create_date;
     
     /**
      * Allows to query a set of records that match the specified conditions
