@@ -5,6 +5,17 @@ use Phalcon\Mvc\Router;
 
 //$router = $di->getRouter();
 
+// ----------Employee CRUD routes----------
+$router->addGet('/:controller/', array(
+    'controller' => 1,
+    'action'     => "index"
+));
+
+$router->addGet('/employee/{id:[0-9]+}', array(
+    'controller' => "Employee",
+    'action'     => "findbyid"
+));
+
 
 // ----------Project CRUD routes----------
 $router->addGet('/:controller/', array(
@@ -14,7 +25,7 @@ $router->addGet('/:controller/', array(
 
 $router->addGet('/project/{id:[0-9]+}', array(
     'controller' => "Project",
-    'action'     => "findbyid"
+    'action'     => "findById"
 ));
 
 $router->addPost('/controller:([a-zA-Z0-9\_\-]+)/([a-zA-Z0-9_-]+)', array(

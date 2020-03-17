@@ -45,11 +45,11 @@ class ProjectController extends ControllerBase
      */
     public function indexAction()
     {
-        $employee = Project::find([
+        $project = Project::find([
             "conditions" => "is_deleted=0",
            //'is_deleted is NULL'
         ]);
-        return $this->response->setJsonContent($employee);
+        return $this->response->setJsonContent($project);
     }
 
     /**
@@ -86,8 +86,8 @@ class ProjectController extends ControllerBase
      */
     public function findByIdAction($project_code)
     {
-        $employee = Project::findFirst($project_code);
-        return $this->response->setJsonContent($employee);
+        $project = Project::findFirst($project_code);
+        return $this->response->setJsonContent($project);
     }
 
      /**
@@ -128,26 +128,26 @@ class ProjectController extends ControllerBase
     {
         $data =$this->request->getJsonRawBody();
 
-    	$employee = new Project();
+    	$project = new Project();
 
-        $employee->project_code = $data->project_code;
-        $employee->project_name = $data->project_name;
-        $employee->start_date = $data->start_date;
-        $employee->end_date = $data->end_date;
-        $employee->project_lead = $data->project_lead;
-        $employee->project_technology = $data->project_technology;
-        $employee->update_date = $data->update_date;
-        $employee->create_date = $data->create_date;
-        $employee->is_deleted = 0;
+        $project->project_code = $data->project_code;
+        $project->project_name = $data->project_name;
+        $project->start_date = $data->start_date;
+        $project->end_date = $data->end_date;
+        $project->project_lead = $data->project_lead;
+        $project->project_technology = $data->project_technology;
+        $project->update_date = $data->update_date;
+        $project->create_date = $data->create_date;
+        $project->is_deleted = 0;
 
-        if (!$employee->save()) 
+        if (!$project->save()) 
          {
             return $this->response->setJsonContent("record not inserted");
          }
         else
          {  
             // echo json_encode($employee);
-            return $this->response->setJsonContent($employee);
+            return $this->response->setJsonContent($project);
           
          }
      
@@ -204,24 +204,24 @@ class ProjectController extends ControllerBase
     {
         $data =$this->request->getJsonRawBody();
 
-        $employee = Project::findFirst($project_code);
+        $project = Project::findFirst($project_code);
         
-        $employee->project_name = $data->project_name;
-        $employee->start_date = $data->start_date;
-        $employee->end_date = $data->end_date;
-        $employee->project_lead = $data->project_lead;
-        $employee->project_technology = $data->project_technology;
-        $employee->create_date = $data->create_date;
-        $employee->update_date = $data->update_date;
+        $project->project_name = $data->project_name;
+        $project->start_date = $data->start_date;
+        $project->end_date = $data->end_date;
+        $project->project_lead = $data->project_lead;
+        $project->project_technology = $data->project_technology;
+        $project->create_date = $data->create_date;
+        $project->update_date = $data->update_date;
 
-        if (!$employee->update()) 
+        if (!$project->update()) 
          {
             return $this->response->setJsonContent("Data not updated");
          }
         else
          {  
             // echo json_encode($employee);
-            return $this->response->setJsonContent($employee);
+            return $this->response->setJsonContent($project);
          }
            
     }
@@ -264,16 +264,16 @@ class ProjectController extends ControllerBase
     public function deleteAction($project_code)
       {
 
-        $employee = Project::findFirst($project_code);
+        $project = Project::findFirst($project_code);
 
-        if(!$employee->delete())
+        if(!$project->delete())
         {
            return $this->response->setJsonContent("Data not deleted");
         }
         else
         {  
             // echo json_encode($employee);
-           return $this->response->setJsonContent($employee);
+           return $this->response->setJsonContent($project);
         } 
 
       }

@@ -277,14 +277,13 @@ class EmployeeprojectrelationController extends ControllerBase
         
     }
    
-
     public function getprojectList($params, $id)
     {       
          
         $builder = new Builder($params);
         $builder->columns([
            // "Employee.*,Project.*,Employeeprojectrelation.*"
-             "Employee.id,Employee.employee_code,Employee.user_name,Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
+             "Employee.id,Employee.employee_code,Employee.user_name,Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Project.start_date,Project.end_date,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
          ]);
         $builder->Join("Project","Employee.id =Project.project_lead");
         $builder->Join("Employeeprojectrelation", "Project.project_lead =Employeeprojectrelation.id")->where('Employee.id = Project.project_lead');
@@ -361,7 +360,7 @@ class EmployeeprojectrelationController extends ControllerBase
         $builder = new Builder($params);
         $builder->columns([
             //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
-            "Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Employee.id,Employee.employee_code,Employee.user_name,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
+            "Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Project.start_date,Project.end_date,Employee.id,Employee.employee_code,Employee.user_name,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
          ]);
          $builder->Join("Project","Employee.id =Project.project_lead");
         $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.id = Project.project_lead")->where("Employee.id = Project.project_lead");

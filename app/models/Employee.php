@@ -3,11 +3,11 @@
 /**
  * @SWG\Definition(definition="Employee", type="object")
  */
-
+use \Phalcon\Mvc\Model;
 use Phalcon\Validation;
-use Phalcon\Validation\Validator\Email as EmailValidator;
-use Phalcon\Validation\Validator\Date as DateValidator;
-use Phalcon\Validation\Validator\PresenceOf;
+use \Phalcon\Mvc\Model\Behavior\SoftDelete;
+
+//use Phalcon\Validation\Validator\PresenceOf;
 
 class Employee extends \Phalcon\Mvc\Model
 {
@@ -114,7 +114,7 @@ class Employee extends \Phalcon\Mvc\Model
      *
      * @var string
      * @Column(column="git_username", type="string", nullable=false)
-     * @SWG\Property(property="git_username", type="string")
+    * @SWG\Property(property="git_username", type="string")
      */
     public $git_username;
 
@@ -122,13 +122,15 @@ class Employee extends \Phalcon\Mvc\Model
      *
      * @var string
      * @Column(column="leaving_date", type="string", nullable=false)
+     * @SWG\Property(property="leaving_date", type="string")
      */
     public $leaving_date;
-
+     
     /**
      *
      * @var integer
-     * @Column(column="employee_deleted", type="integer", length=11, nullable=false)
+     * @Column(column="employee_deleted", type="integer", length=1, nullable=false)
+     * @SWG\Property(property="is_deleted", type="integer")
      */
     public $employee_deleted;
 
@@ -136,6 +138,7 @@ class Employee extends \Phalcon\Mvc\Model
      *
      * @var string
      * @Column(column="created", type="string", nullable=false)
+     * @SWG\Property(property="created", type="string")
      */
     public $created;
 
@@ -143,6 +146,7 @@ class Employee extends \Phalcon\Mvc\Model
      *
      * @var string
      * @Column(column="updated", type="string", nullable=false)
+     * @SWG\Property(property="updated", type="string")
      */
     public $updated;
     /**
@@ -186,10 +190,13 @@ class Employee extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSource("employee");
-
         $this->hasMany('id', 'RelatedTags', 'entity_id');
         $this->hasMany('id', 'Employeeprojectrelation' , 'employee_id', ["alias" => "Employeeprojectrelation"]);
         $this->hasOne('id', 'EmployeeMeta', 'employee_id', ['alias' => 'EmployeeMetaData']);
+        $this->addBehavior(new \Phalcon\Mvc\Model\Behavior\SoftDelete([
+            'field' => 'employee_deleted',
+            'value' => '1'
+        ]));
     }
 
     /**
@@ -224,11 +231,11 @@ class Employee extends \Phalcon\Mvc\Model
         return parent::findFirst($parameters);
     }
 
-    public function getEmployeeDetails($column,$condition)
-    {
-        return  Employee::findFirst([
-                  "columns" => $column,
-                  "conditions" => $condition
-                ]);
-    }
+    // public function getEmployeeDetails($column,$condition)
+    // {
+    //     return  Employee::findFirst([
+    //               "columns" => $column,
+    //               "conditions" => $condition
+    //             ]);
+    // }
 }
