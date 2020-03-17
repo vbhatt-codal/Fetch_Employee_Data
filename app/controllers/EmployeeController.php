@@ -4,22 +4,9 @@
   * @SWG\Definition(definition="Employee", type="object",
   *     @SWG\Property(property="id", type="integer"),
   *     @SWG\Property(property="employee_code", type="string"),
-  *     @SWG\Property(property="user_name", type="string"),
   *     @SWG\Property(property="first_name", type="string"),
   *     @SWG\Property(property="last_name", type="string"),
-  *     @SWG\Property(property="email", type="string"),
-  *     @SWG\Property(property="phone", type="string"),
-  *     @SWG\Property(property="date_of_birth", type="string"),
-  *     @SWG\Property(property="gender", type="string"),
-  *     @SWG\Property(property="position", type="string"),
-  *     @SWG\Property(property="hire_date", type="string"),
-  *     @SWG\Property(property="leaving_date", type="string"),
-  *     @SWG\Property(property="slack_username", type="string"),
-  *     @SWG\Property(property="git_username", type="string"),
-  *     @SWG\Property(property="created", type="string"),
-  *     @SWG\Property(property="updated", type="string"),
-  *     @SWG\Property(property="slack_notification", type="string"),
-  *     @SWG\Property(property="attendence_notification", type="string"),
+  *     @SWG\Property(property="position", type="string"), 
   * )
  */
 
@@ -56,6 +43,7 @@ class EmployeeController extends ControllerBase
     public function indexAction()
     {
         $employee = Employee::find([
+            "columns" => "id,employee_code,first_name,last_name,position",
            "conditions" => "employee_deleted=0",
         ]);
         return $this->response->setJsonContent($employee);
@@ -95,7 +83,10 @@ class EmployeeController extends ControllerBase
      */
     public function findByIdAction($id)
     {
-        $employee = Employee::findFirst($id);
+        $employee = Employee::find([
+          "conditions" => $id,
+          "columns" => "id,employee_code,first_name,last_name,position",
+          ]);
         return $this->response->setJsonContent($employee);
     }
 
