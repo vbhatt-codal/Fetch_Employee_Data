@@ -30,7 +30,7 @@ $router->addGet('/project/{id:[0-9]+}', array(
 
 $router->addPost('/controller:([a-zA-Z0-9\_\-]+)/([a-zA-Z0-9_-]+)', array(
     'controller' => 1,
-    'action'     => "save"
+    'action'     => "create"
 ));
 
 $router->addPut('/{controller:([a-zA-Z0-9\_\-]+)}/{id:([a-zA-Z0-9-_]+)}', array(
@@ -44,15 +44,16 @@ $router->addDelete('/{controller:([a-zA-Z0-9\_\-]+)}/{id:([a-zA-Z0-9-_]+)}', arr
  ));
 
 
+
 //-----------Employee_project relation CRUD routes------------
 $router->addGet('/:controller/', array(
     'controller' => 1,
-    'action'     => "indexrelation"
+    'action'     => "indexRelation"
 ));
 
 $router->addPost('/:controller/', array(
     'controller' => "Employeeprojectrelation",
-    'action'     => "createrelation"
+    'action'     => "createRelation"
 ));
 $router->addPut('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0-9-_]+)}', array(
     'controller' => 1,
@@ -66,14 +67,14 @@ $router->addDelete('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA
 //employee/id/project
 $router->addGet('/Employee/{id:[0-9]+}/project', array(
     'controller'    => "Employeeprojectrelation",
-    'action'        => "getprojectbyemployee",
+    'action'        => "getProjectByEmployee",
     'id'            => 2
 ));
 
 //project/id/employee
 $router->addGet('/Project/{id:[0-9]+}/employee', array(
     'controller'    => "Employeeprojectrelation",
-    'action'        => "getemployeebyproject", 
+    'action'        => "getEmployeeByProject", 
     'id'            => 2
 ));
 

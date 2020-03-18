@@ -46,8 +46,7 @@ class ProjectController extends ControllerBase
     public function indexAction()
     {
         $project = Project::find([
-            "conditions" => "is_deleted=0",
-           //'is_deleted is NULL'
+            "conditions" => "is_deleted=0"
         ]);
         return $this->response->setJsonContent($project);
     }
@@ -91,7 +90,7 @@ class ProjectController extends ControllerBase
     }
 
      /**
-     * @SWG\Post(path="/Project/save",
+     * @SWG\Post(path="/Project/create",
      *   tags={"Project"},
      *   summary="Create a new  Project",
      *   description="create new project",
@@ -124,7 +123,7 @@ class ProjectController extends ControllerBase
      *   )
      * )
      */
-    public function saveAction()
+    public function createAction()
     {
         $data =$this->request->getJsonRawBody();
 
@@ -213,6 +212,7 @@ class ProjectController extends ControllerBase
         $project->project_technology = $data->project_technology;
         $project->create_date = $data->create_date;
         $project->update_date = $data->update_date;
+        $project->is_deleted = $data->is_deleted;
 
         if (!$project->update()) 
          {
@@ -277,6 +277,7 @@ class ProjectController extends ControllerBase
         } 
 
       }
+
 
 
  }     

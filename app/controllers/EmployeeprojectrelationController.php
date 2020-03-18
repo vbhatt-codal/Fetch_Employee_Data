@@ -22,7 +22,7 @@ class EmployeeprojectrelationController extends ControllerBase
     /**
      * @SWG\Get(
      *     tags={"EmployeeProjectRelation"},
-     *     path="/Employeeprojectrelation/indexrelation",
+     *     path="/Employeeprojectrelation/indexRelation",
      *     description="Returns a Relation between employee and project based on a single ID",
      *     summary="Get Employee Project Deatils",
      *     operationId="GetEmployee",
@@ -43,14 +43,14 @@ class EmployeeprojectrelationController extends ControllerBase
      *     )
      * )
      */
-    public function indexrelationAction()
+    public function indexRelationAction()
     {
-        $employee = Employeeprojectrelation::find();
-        return $this->response->setJsonContent($employee);
+        $relation = Employeeprojectrelation::find();
+        return $this->response->setJsonContent($relation);
     }
 
      /**
-     * @SWG\Post(path="/Employeeprojectrelation/createrelation",
+     * @SWG\Post(path="/Employeeprojectrelation/createRelation",
      *   tags={"EmployeeProjectRelation"},
      *   summary="Create a new Employee Project",
      *   description="create new employee",
@@ -83,24 +83,24 @@ class EmployeeprojectrelationController extends ControllerBase
      *   )
      * )
      */
-    public function createrelationAction()
+    public function createRelationAction()
     {
         $data =$this->request->getJsonRawBody();
        
-        $employee = new Employeeprojectrelation();
-        $employee->id = $data->id;
-        $employee->project_code = $data->project_code;
-        $employee->employee_id = $data->employee_id;
-        $employee->updated_date = $data->updated_date;
-        $employee->created_date = $data->created_date;
-        if (!$employee->create()) 
+        $relation = new Employeeprojectrelation();
+        $relation->id = $data->id;
+        $relation->project_code = $data->project_code;
+        $relation->employee_id = $data->employee_id;
+        $relation->updated_date = $data->updated_date;
+        $relation->created_date = $data->created_date;
+        if (!$relation->create()) 
         {
              return $this->response->setJsonContent("Data Not Inserted.");
         }
         else
         {  
         // echo json_encode($employee);
-             return $this->response->setJsonContent($employee);
+             return $this->response->setJsonContent($relation);
         }
      
     }
@@ -155,21 +155,21 @@ class EmployeeprojectrelationController extends ControllerBase
     {
         $data =$this->request->getJsonRawBody();
 
-        $employee = Employeeprojectrelation::findFirst($id);
+        $relation = Employeeprojectrelation::findFirst($id);
         
-        $employee->project_code = $data->project_code;
-        $employee->employee_id = $data->employee_id;
-        $employee->created_date = $data->created_date;
-        $employee->updated_date = $data->updated_date;
+        $relation->project_code = $data->project_code;
+        $relation->employee_id = $data->employee_id;
+        $relation->created_date = $data->created_date;
+        $relation->updated_date = $data->updated_date;
 
-        if (!$employee->update()) 
+        if (!$relation->update()) 
          {
             return $this->response->setJsonContent("Data not updated");
          }
         else
          {  
             // echo json_encode($employee);
-            return $this->response->setJsonContent($employee);
+            return $this->response->setJsonContent($relation);
          }
            
     }
@@ -211,15 +211,15 @@ class EmployeeprojectrelationController extends ControllerBase
      */
     public function deleteAction($id)
       {
-        $employee = Employeeprojectrelation::findFirst($id);
-        if(!$employee->delete())
+        $relation = Employeeprojectrelation::findFirst($id);
+        if(!$relation->delete())
         {
            return $this->response->setJsonContent("Data not deleted");
         }
         else
         {  
             // echo json_encode($employee);
-           return $this->response->setJsonContent($employee);
+           return $this->response->setJsonContent($relation);
         } 
       }
 
@@ -256,7 +256,7 @@ class EmployeeprojectrelationController extends ControllerBase
      *     )
      * )
      */
-    public function getprojectbyemployeeAction($id)
+    public function getProjectByEmployeeAction($id)
     {             
        
             $request = new Request();
@@ -265,7 +265,7 @@ class EmployeeprojectrelationController extends ControllerBase
                 'models' => 'Employee'
             ];
 
-            $data = $this->getprojectList($params,$id); 
+            $data = $this->getProjectList($params,$id); 
             if(isset($data))
             {
                 return $this->response->setJsonContent($data);
@@ -277,7 +277,7 @@ class EmployeeprojectrelationController extends ControllerBase
         
     }
    
-    public function getprojectList($params, $id)
+    public function getProjectList($params, $id)
     {       
          
         $builder = new Builder($params);
@@ -336,7 +336,7 @@ class EmployeeprojectrelationController extends ControllerBase
      *     )
      * )
      */
-    public function getemployeebyprojectAction($project_code)
+    public function getEmployeeByProjectAction($project_code)
     {             
             $request = new Request();
     
@@ -344,7 +344,7 @@ class EmployeeprojectrelationController extends ControllerBase
                 'models' => 'Employee'
             ];
 
-            $data = $this->getemployeeList($params,$project_code); 
+            $data = $this->getEmployeeList($params,$project_code); 
             if(isset($data))
             {
                 return $this->response->setJsonContent($data);
@@ -356,7 +356,7 @@ class EmployeeprojectrelationController extends ControllerBase
     }
    
 
-    public function getemployeeList($params, $project_code)
+    public function getEmployeeList($params, $project_code)
     {       
         $builder = new Builder($params);
         $builder->columns([

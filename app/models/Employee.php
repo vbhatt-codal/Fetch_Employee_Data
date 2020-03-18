@@ -64,9 +64,20 @@ class Employee extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSource("employee");
-        $this->hasMany('id', 'RelatedTags', 'entity_id');
-        $this->hasMany('id', 'Employeeprojectrelation' , 'employee_id', ["alias" => "Employeeprojectrelation"]);
-        $this->hasOne('id', 'EmployeeMeta', 'employee_id', ['alias' => 'EmployeeMetaData']);
+        $this->hasMany(
+                'id', 
+                'Employeeprojectrelation', 
+                'employee_id', 
+                ["alias" => "Employeeprojectrelation"]
+        );
+       
+        $this->hasManyToMany(
+            "id",
+            "Employeeprojectrelation",
+            "employee_id", "project_code",
+            "Project",
+            "id"
+        );
         $this->addBehavior(new \Phalcon\Mvc\Model\Behavior\SoftDelete([
             'field' => 'employee_deleted',
             'value' => '1'
