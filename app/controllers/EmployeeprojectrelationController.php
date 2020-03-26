@@ -9,6 +9,10 @@ use Phalcon\Http\Request;
   *     @SWG\Property(property="id", type="integer"),
   *     @SWG\Property(property="project_code", type="integer"),
   *     @SWG\Property(property="employee_id", type="integer"),
+  *     @SWG\Property(property="start_date", type="string"),
+  *     @SWG\Property(property="end_date", type="string"),
+  *     @SWG\Property(property="work_alloted", type="integer"),
+  *     @SWG\Property(property="work_alloted_description", type="string"),
   *     @SWG\Property(property="updated_date", type="string"),
   *     @SWG\Property(property="created_date", type="string"),
   * )
@@ -50,9 +54,9 @@ class EmployeeprojectrelationController extends ControllerBase
     }
 
      /**
-     * @SWG\Post(path="/Employeeprojectrelation/createRelation",
+     * @SWG\Post(path="/Employeeprojectrelation/projectAllocation",
      *   tags={"EmployeeProjectRelation"},
-     *   summary="Create a new Employee Project",
+     *   summary="Create a new Employee Project Allocation",
      *   description="create new employee",
      *   summary="create employee",
      *   operationId="CreateEmployee",
@@ -82,26 +86,33 @@ class EmployeeprojectrelationController extends ControllerBase
      *         description="Not Authorized Invalid or missing Authorization header"
      *   )
      * )
-     */
-    public function createRelationAction()
+     */ 
+     public function projectAllocationAction()
     {
-        $data =$this->request->getJsonRawBody();
+        
+         $data =$this->request->getJsonRawBody();
        
         $relation = new Employeeprojectrelation();
         $relation->id = $data->id;
         $relation->project_code = $data->project_code;
         $relation->employee_id = $data->employee_id;
-        $relation->updated_date = $data->updated_date;
-        $relation->created_date = $data->created_date;
-        if (!$relation->create()) 
+        $relation->start_date = $data->start_date;
+        $relation->end_date = $data->end_date;
+        $relation->work_alloted = $data->work_alloted;
+        $relation->work_alloted_description = $data->work_alloted_description;
+        $relation->updated_date = date('Y-m-d H:i:s');
+        $relation->created_date = date('Y-m-d H:i:s');
+        
+        if (!$relation->save()) 
         {
              return $this->response->setJsonContent("Data Not Inserted.");
         }
         else
         {  
-        // echo json_encode($employee);
              return $this->response->setJsonContent($relation);
         }
+
+    }
      
     }
 
@@ -159,8 +170,8 @@ class EmployeeprojectrelationController extends ControllerBase
         
         $relation->project_code = $data->project_code;
         $relation->employee_id = $data->employee_id;
-        $relation->created_date = $data->created_date;
-        $relation->updated_date = $data->updated_date;
+        $relation->created_date = date('Y-m-d H:i:s');
+        $relation->updated_date = date('Y-m-d H:i:s');
 
         if (!$relation->update()) 
          {
@@ -379,6 +390,6 @@ class EmployeeprojectrelationController extends ControllerBase
         $data = $builder->getQuery()->execute()->toArray();
         return $data;
     }
+   
 
-    
  }   

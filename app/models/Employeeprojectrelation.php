@@ -58,7 +58,38 @@ class Employeeprojectrelation extends \Phalcon\Mvc\Model
      */
     public $employee_id;
 
-    
+    /**
+     *
+     * @var date
+     * @Column(column="start_date", type="date", nullable=false)
+     * @SWG\Property(property="start_date", type="date")
+     */
+    public $start_date;
+
+    /**
+     *
+     * @var date
+     * @Column(column="end_date", type="date", nullable=false)
+     * @SWG\Property(property="end_date", type="date")
+     */
+    public $end_date;
+        
+    /**
+     *
+     * @var integer
+     * @Column(column="work_alloted", type="integer", nullable=false)
+     * @SWG\Property(property="work_alloted", type="integer")
+     */
+    public $work_alloted;
+
+    /**
+     *
+     * @var text
+     * @Column(column="work_alloted_description", type="text", nullable=false)
+     * @SWG\Property(property="work_alloted_description", type="text")
+     */
+    public $work_alloted_description;
+
     /**
      *
      * @var timestamp

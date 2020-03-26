@@ -8,16 +8,21 @@
   *     @SWG\Property(property="end_date", type="string"),
   *     @SWG\Property(property="project_lead", type="integer"),
   *     @SWG\Property(property="project_technology", type="string"),
+  *     @SWG\Property(property="project_perc_alloted", type="integer"),
+  *     @SWG\Property(property="alloted_description", type="string"),
   *     @SWG\Property(property="update_date", type="string"),
   *     @SWG\Property(property="create_date", type="string"),
   * )
  */
 use Phlacon\Mvc\Model;
 use Phalcon\Mvc\Model\Query\Builder;
+use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
+use Phalcon\Http\Request;
 
 
 class ProjectController extends ControllerBase
-{
+{   
+   protected $project_lead;
 
     /**
      * @SWG\Get(
@@ -56,7 +61,7 @@ class ProjectController extends ControllerBase
      *     tags={"Project"},
      *     path="/project/{id}",
      *     description="Returns a Project based on a single ID",
-     *     summary="Get Project Deatils",
+     *     summary="Get Project Deatils by particular ID",
      *     operationId="GetEmployee",
      *     consumes={"application/json"},
      *     produces={"application/json"},
@@ -135,8 +140,10 @@ class ProjectController extends ControllerBase
         $project->end_date = $data->end_date;
         $project->project_lead = $data->project_lead;
         $project->project_technology = $data->project_technology;
-        $project->update_date = $data->update_date;
-        $project->create_date = $data->create_date;
+        $project->project_perc_alloted = $data->project_perc_alloted;
+        $project->alloted_description = $data->alloted_description;
+        $project->update_date = date('Y-m-d H:i:s');
+        $project->create_date = date('Y-m-d H:i:s');
         $project->is_deleted = 0;
 
         if (!$project->save()) 
@@ -154,7 +161,7 @@ class ProjectController extends ControllerBase
     
 
     /**
-     * @SWG\Put(path="/Project/{id}",
+     * @SWG\Put(path="/Project/update/{id}",
      *   tags={"Project"},
      *   summary="Update an existing  project details",
      *   description="Update existing  project details",
@@ -210,6 +217,8 @@ class ProjectController extends ControllerBase
         $project->end_date = $data->end_date;
         $project->project_lead = $data->project_lead;
         $project->project_technology = $data->project_technology;
+        $project->project_perc_alloted = $data->project_perc_alloted;
+        $project->alloted_description = $data->alloted_description;
         $project->create_date = $data->create_date;
         $project->update_date = $data->update_date;
         $project->is_deleted = $data->is_deleted;
@@ -229,7 +238,7 @@ class ProjectController extends ControllerBase
      /**
      * @SWG\Delete(
      *     tags={"Project"},
-     *     path="/Project/{id}",
+     *     path="/Project/delete/{id}",
      *     description="deletes a single  project record based on the ID",
      *     summary="delete Project data",
      *     operationId="DeleteEmployee",
@@ -278,6 +287,63 @@ class ProjectController extends ControllerBase
 
       }
 
+    public function projectAllocationAction($project_lead)
+    {   
+        $projectPercAlloted;
+        $minPercentageAlloted =1;
+        $maxPercentageAlloted =100;
+        
+        //SELECT SUM(project_perc_alloted) AS "Total working hours" FROM project WHERE project_lead =1 
+
+            $params = [
+                'models' => 'Project'
+            ];
+
+            $builder = new Builder($params);
+            $builder->columns(['SUM(project_perc_alloted)'])
+                    ->from('Project');
+                if(isset($project_lead) && is_numeric($project_lead) && $project_lead > 0)
+                {
+                    $builder->where("project_lead = ".$project_lead);
+                }  
+                else
+                {
+                    echo "improper id please enter any integer type id";
+                }
 
 
- }     
+                $displayData = $builder->getQuery()->execute()->toArray();
+               // return $this->response->setJsonContent($data);;
+                
+
+            $data = $this->request->getJsonRawBody();
+            $projectCode = $data['project_code'];
+            $projectName = $data['project_name'];
+            $startDate = $date . ' ' . $data['start_date'];
+            $endDate = $date . ' ' . $data['end_date'];
+            $projectLead = $data['project_lead'];
+            $projectPercAlloted = $data['project_perc_alloted'];
+            $allotedDescription = $data['alloted_description'];
+
+
+
+        //$percent = ($row['tally'] / $total) * 100;
+            // while (strtotime($start_date) <= strtotime($end_date)) 
+            // { // Compare start date is less than end date
+                
+            //         $date = date ("Y-m-d", strtotime("+1 day", strtotime($date))); // increment date by 1 day
+
+            //         if ($project_perc_alloted < $minPercentage) {
+            //             echo "Error: less than {$minPercentage}%";
+            //         } 
+            //         elseif ($project_perc_alloted > $maxPercentage) {
+            //             echo "Error: more than {$maxPercentage}%";
+            //         } 
+            //         else {
+            //             echo "Total percentage is {$project_perc_alloted}%";
+            //         }
+            // }
+    
+    }
+
+}

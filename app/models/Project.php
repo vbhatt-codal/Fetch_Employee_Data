@@ -60,6 +60,23 @@ class Project extends \Phalcon\Mvc\Model
     
     /**
      *
+     * @var integer
+     * @Column(column="project_perc_alloted", type="integer", length=3, nullable=false)
+     * @SWG\Property(property="project_perc_alloted", type="integer")
+     */
+    public $project_perc_alloted;
+    
+    /**
+     *
+     * @var string
+     * @Column(column="alloted_description", type="text", nullable=false)
+     * @SWG\Property(property="alloted_description", type="text")
+     */
+    public $alloted_description;
+    
+
+    /**
+     *
      * @var timestamp
      * @Column(column="update_date", type="timestamp", nullable=false)
      * @SWG\Property(property="update_date", type="string")
@@ -79,6 +96,8 @@ class Project extends \Phalcon\Mvc\Model
      * @SWG\Property(property="created_date", type="string")
      */
     public $create_date;
+
+
 
     /**
      * Initialize method for model.
@@ -121,8 +140,20 @@ class Project extends \Phalcon\Mvc\Model
     {
         return parent::find($parameters);
     }
-    //  public static function findFirst($parameters = null)
-    // {
-    //     return parent::findFirst($parameters);
-    // }
+    
+
+ //    public function beforeValidationOnCreate()
+ //    {
+ //        $minPercAllotted = 1;
+ //        $maxPercAlloted = 100;
+
+
+ //    if ( $project_perc_alloted < $minPercentage) {
+ //        echo "Error: less than {$minPercentage}%";
+ //    } elseif ($ $project_perc_alloted > $maxPercentage) {
+ //        echo "Error: more than {$maxPercentage}%";
+ //    } else {
+ //        echo "Total percentage is {$project_perc_alloted}%";
+ //    }
+ //    }
 }

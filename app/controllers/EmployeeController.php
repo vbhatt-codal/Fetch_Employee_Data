@@ -54,7 +54,7 @@ class EmployeeController extends ControllerBase
      *     tags={"Employee"},
      *     path="/employee/{id}",
      *     description="Returns a Employee based on a single ID",
-     *     summary="Get Employee Deatils",
+     *     summary="Get Employee Deatils by a particular ID",
      *     operationId="GetEmployeeById",
      *     consumes={"application/json"},
      *     produces={"application/json"},
