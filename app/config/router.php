@@ -16,11 +16,7 @@ $router->addGet('/employee/{id:[0-9]+}', array(
     'action'     => "findbyid"
 ));
 
-$router->addGet('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0-9-_]+)}', array(
-    'controller' => "Project",
-    'action'     => "projectAllocation",
-     'id'         => 2
- ));
+
 // ----------Project CRUD routes----------
 $router->addGet('/:controller/', array(
     'controller' => 1,
@@ -59,15 +55,21 @@ $router->addGet('/:controller/', array(
     'action'     => "indexRelation"
 ));
 
+$router->addPut('/allocation/{id:[0-9]+}', array(
+    'controller' => "Employeeprojectrelation",
+    'action'     => "updateAllocation",
+));
+
+
 // $router->addPost('/:controller/', array(
 //     'controller' => "Employeeprojectrelation",
 //     'action'     => "createRelation"
 // ));
 
-$router->addPost('/:controller', array(
-    'controller' => "Employeeprojectrelation",
-    'action'     => "projectAllocation"
-));
+// $router->addPost('/:controller', array(
+//     'controller' => "Employeeprojectrelation",
+//     'action'     => "projectAllocation",
+// ));
 
 $router->addPut('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0-9-_]+)}', array(
     'controller' => 1,
