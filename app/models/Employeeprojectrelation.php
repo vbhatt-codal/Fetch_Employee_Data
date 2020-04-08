@@ -115,4 +115,16 @@ class Employeeprojectrelation extends \Phalcon\Mvc\Model
     {
         return parent::find($parameters);
     }
+
+     /**
+     * Allows to query a set of records that match the specified conditions
+     *
+     * @param mixed $parameters
+    */
+    public static function findFirst($parameters = null)
+    {
+        return parent::findFirst($parameters);
+    }
+
+
 }

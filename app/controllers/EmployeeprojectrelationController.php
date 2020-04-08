@@ -92,21 +92,25 @@ class EmployeeprojectrelationController extends ControllerBase
     public function projectAllocationAction()
     {   
        
-            $data =$this->request->getJsonRawBody();
-                
-             //   $workAlloted = $data['work_alloted'];   
-            $projectPercAlloted =  $data->work_alloted;
+        $data =$this->request->getJsonRawBody();
+            
+         //   $workAlloted = $data['work_alloted'];   
+        $projectPercAlloted =  $data->work_alloted;
+        // $startDate = $data->start_date;
+        // $endDate = $data->end_date;
+        // for ( $i = $startDate; $i <= $endDate; $i = $i + 86400 )
+        // {
 
             if($projectPercAlloted <= 1 )
             {
                 return "Error: you have to allocate minimun 1%";
             }
                 
-            if($workAlloted >= 100)
+            if($projectPercAlloted >= 100)
             {
                 return "Error:you can not allocate more than 100%";
             }    
-
+        // }
             else
             {   
 
@@ -188,20 +192,7 @@ class EmployeeprojectrelationController extends ControllerBase
         $data =$this->request->getJsonRawBody();
 
         $relation = Employeeprojectrelation::findFirst($id);
-        $projectPercAlloted =  $data->work_alloted;
-
-        if($projectPercAlloted <= 1 )
-        {
-            return "Error: you have to allocate minimun 1%";
-        }
-            
-        if($workAlloted >= 100)
-        {
-            return "Error:you can not allocate more than 100%";
-        }    
-
-        else
-        {      
+          
             $relation->project_code = $data->project_code;
             $relation->employee_id = $data->employee_id;
             $relation->start_date = $data->start_date;
@@ -219,7 +210,7 @@ class EmployeeprojectrelationController extends ControllerBase
              {  
                 return $this->response->setJsonContent($relation);
              }
-        }           
+                   
     }
 
      /**
@@ -331,16 +322,15 @@ class EmployeeprojectrelationController extends ControllerBase
         $builder = new Builder($params);
         $builder->columns([
            // "Employee.*,Project.*,Employeeprojectrelation.*"
-             "Employee.id, Employee.employee_code, Employee.user_name, Project.project_code, Project.project_name, Project.project_lead, Project.project_technology, Project.start_date, Project.end_date, Employeeprojectrelation.id as relation_id, Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
+             "Employee.id, Employee.employee_code, Employee.user_name, Project.project_code, Project.project_name, Project.project_lead, Project.project_technology, Project.start_date, Project.end_date, Employeeprojectrelation.id, Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
          ]);
  
-        //$builder->Where("Employee.id = Employeeprojectrelation.id AND Employee.id=Project.project_lead");
-            $builder->Join("Project","Employee.id =Project.project_lead");
-            $builder->Join("Employeeprojectrelation", "Employee.id =Employeeprojectrelation.employee_id");
+        $builder->Join("Project","Employee.id =Project.project_lead");
+        $builder->Join("Employeeprojectrelation", "Employee.id =Employeeprojectrelation.employee_id");
 
-        if(isset($id))
+        if(isset($id)  && is_numeric($id) && $id > 0)
         {
-            $builder->where("Employee.id = ".$id);
+            $builder->where("Employeeprojectrelation.id = ".$id); //Employee.id = which is change to EPR.id
         }  
         else
         {
@@ -386,21 +376,21 @@ class EmployeeprojectrelationController extends ControllerBase
      */
     public function getEmployeeByProjectAction($project_code)
     {             
-            $request = new Request();
-    
-            $params = [
-                'models' => 'Employee'
-            ];
+        $request = new Request();
 
-            $data = $this->getEmployeeList($params,$project_code); 
-            if(isset($data))
-            {
-                return $this->response->setJsonContent($data);
-            }
-            else
-            {
-                return $this->sendForbidden();
-            }      
+        $params = [
+            'models' => 'Employee'
+        ];
+
+        $data = $this->getEmployeeList($params,$project_code); 
+        if(isset($data))
+        {
+            return $this->response->setJsonContent($data);
+        }
+        else
+        {
+            return $this->sendForbidden();
+        }      
     }
    
 
@@ -409,13 +399,13 @@ class EmployeeprojectrelationController extends ControllerBase
         $builder = new Builder($params);
         $builder->columns([
             //"Employee.*,Employeeproject.*,Employeeprojectrelation.*"
-            "Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Project.start_date,Project.end_date,Employee.id,Employee.employee_code,Employee.user_name,Employeeprojectrelation.id as relation_id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
+            "Project.project_code, Project.project_name,Project.project_lead,Project.project_technology,Project.start_date,Project.end_date,Employee.id,Employee.employee_code,Employee.user_name,Employeeprojectrelation.id,Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
          ]);
-         $builder->Join("Project","Employee.id =Project.project_lead");
+        
+        $builder->Join("Project","Employee.id =Project.project_lead");
         $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.employee_id = Project.project_lead")->where("Employee.id = Project.project_lead");
        
-       
-        if(isset($project_code)) 
+        if(isset($project_code) && is_numeric($project_code) && $project_code > 0) 
         {
             $builder->where("Project.project_code = ".$project_code);
         }  
@@ -426,6 +416,36 @@ class EmployeeprojectrelationController extends ControllerBase
 
         $data = $builder->getQuery()->execute()->toArray();
         return $data;
+    }
+
+    public function getSumOfAllocationAction($employee_id)
+    {   
+        
+        //SELECT SUM(project_perc_alloted) AS "Total working hours" FROM project WHERE project_lead =1 
+
+            $params = [
+                'models' => 'Employeeprojectrelation'
+            ];
+
+            $builder = new Builder($params);
+            $builder->columns(['SUM(work_alloted)'])
+                    ->from('Employeeprojectrelation');
+                if(isset($employee_id) && is_numeric($employee_id) && $employee_id > 0)
+                {
+                    $builder->where("work_alloted < 100")
+                            ->andWhere ("employee_id = ".$employee_id);
+
+                }  
+                else
+                {
+                    echo "improper id please enter any integer type id";
+                }
+
+
+                $data = $builder->getQuery()->execute()->toArray();
+                return $this->response->setJsonContent($data);;
+                
+    
     }
    
      /**
@@ -449,7 +469,6 @@ class EmployeeprojectrelationController extends ControllerBase
      *     name="body",
      *     description="Update Employee Project Relation details",
      *     required=false,
-     *     @SWG\Schema(ref="#/definitions/Employeeprojectrelation")
      *   ),
      *   @SWG\Response(
      *     response="default",
@@ -478,24 +497,42 @@ class EmployeeprojectrelationController extends ControllerBase
         $data =$this->request->getJsonRawBody();
        
         $relation = Employeeprojectrelation::findFirst([
-       
            "conditions" => "id =".$id,
         ]);
-      
-        //$relation += $data->work_alloted; 
+         $projectPercAlloted =  $data->work_alloted;
 
-            $relation->work_alloted += $data->work_alloted;
-              $relation->updated_date = date('Y-m-d H:i:s');
+        if($projectPercAlloted <= 1 )
+        {  
+            return $this->response->setJsonContent("Error: you have to allocate minimun 1%");
+        }
+            
+        if($projectPercAlloted >= 100)
+        {  
+            return $this->response->setJsonContent("Error:you can not allocate more than 100% at a time");
+        }    
+         
+        else
+        {   
+    
+          //  $relation->work_alloted += $projectPercAlloted;
+            $relation->work_alloted += $projectPercAlloted;  
+            $relation->updated_date = date('Y-m-d H:i:s');
+
+            if($relation->work_alloted  >= 100)
+            { 
+                return  $this->response->setJsonContent("Error: your sum of work exceeding more than 100");
+            }
 
             if (!$relation->update()) 
              {
+                return $this->response->setStatusCode(400);
                 return $this->response->setJsonContent("Data not updated");
              }
             else
              {  
                 return $this->response->setJsonContent($relation);
              }
-        
+        }
     }
 
  }   
@@ -532,33 +569,5 @@ class EmployeeprojectrelationController extends ControllerBase
                 $displayData = $builder->getQuery()->execute()->toArray();
                // return $this->response->setJsonContent($data);;
                 
-
-            $data = $this->request->getJsonRawBody();
-            $projectCode = $data['project_code'];
-            $projectName = $data['project_name'];
-            $startDate = $date . ' ' . $data['start_date'];
-            $endDate = $date . ' ' . $data['end_date'];
-            $projectLead = $data['project_lead'];
-            $projectPercAlloted = $data['project_perc_alloted'];
-            $allotedDescription = $data['alloted_description'];
-
-
-
-        //$percent = ($row['tally'] / $total) * 100;
-            // while (strtotime($start_date) <= strtotime($end_date)) 
-            // { // Compare start date is less than end date
-                
-            //         $date = date ("Y-m-d", strtotime("+1 day", strtotime($date))); // increment date by 1 day
-
-            //         if ($project_perc_alloted < $minPercentage) {
-            //             echo "Error: less than {$minPercentage}%";
-            //         } 
-            //         elseif ($project_perc_alloted > $maxPercentage) {
-            //             echo "Error: more than {$maxPercentage}%";
-            //         } 
-            //         else {
-            //             echo "Total percentage is {$project_perc_alloted}%";
-            //         }
-            // }
     
     }

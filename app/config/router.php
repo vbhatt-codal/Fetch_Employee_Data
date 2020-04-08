@@ -49,10 +49,14 @@ $router->addDelete('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA
 
 
 
-//-----------Employee_project relation CRUD routes------------
+//-----------Employee_project_relation  routes------------
 $router->addGet('/:controller/', array(
     'controller' => 1,
     'action'     => "indexRelation"
+));
+$router->addGet('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0-9-_]+)}', array(
+    'controller' => 1,
+    'action'     => "getSumOfAllocation"
 ));
 
 $router->addPut('/allocation/{id:[0-9]+}', array(
@@ -61,15 +65,10 @@ $router->addPut('/allocation/{id:[0-9]+}', array(
 ));
 
 
-// $router->addPost('/:controller/', array(
-//     'controller' => "Employeeprojectrelation",
-//     'action'     => "createRelation"
-// ));
-
-// $router->addPost('/:controller', array(
-//     'controller' => "Employeeprojectrelation",
-//     'action'     => "projectAllocation",
-// ));
+$router->addPost('/:controller', array(
+    'controller' => "Employeeprojectrelation",
+    'action'     => "projectAllocation",
+));
 
 $router->addPut('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0-9-_]+)}', array(
     'controller' => 1,
@@ -93,6 +92,7 @@ $router->addGet('/Project/{id:[0-9]+}/employee', array(
     'action'        => "getEmployeeByProject", 
     'id'            => 2
 ));
+
 
 //$router->handle();
 return $router;
