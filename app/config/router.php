@@ -54,16 +54,12 @@ $router->addGet('/:controller/', array(
     'controller' => 1,
     'action'     => "indexRelation"
 ));
+
+//Employeeprojectrelation/getSumOfAllocation/5
 $router->addGet('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0-9-_]+)}', array(
     'controller' => 1,
     'action'     => "getSumOfAllocation"
 ));
-
-$router->addPut('/allocation/{id:[0-9]+}', array(
-    'controller' => "Employeeprojectrelation",
-    'action'     => "updateAllocation",
-));
-
 
 $router->addPost('/:controller', array(
     'controller' => "Employeeprojectrelation",
@@ -74,6 +70,11 @@ $router->addPut('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0
     'controller' => 1,
     'action'     => "update",
  ));
+//update allocation 20+20 =40
+$router->addPut('/allocation/{id:[0-9]+}', array(
+    'controller' => "Employeeprojectrelation",
+    'action'     => "updateAllocation",
+));
 
 $router->addDelete('/{controller:([a-zA-Z0-9\_\-]+)}/([a-zA-Z0-9_-]+)/{id:([a-zA-Z0-9-_]+)}', array(
     'controller' => 1,

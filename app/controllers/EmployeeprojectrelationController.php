@@ -1,9 +1,5 @@
 <?php
 
-use Phlacon\Mvc\Model;
-use Phalcon\Mvc\Model\Query\Builder;
-use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
-use Phalcon\Http\Request;
 /**
   * @SWG\Definition(definition="Employeeprojectrelation", type="object",
   *     @SWG\Property(property="id", type="integer"),
@@ -17,6 +13,11 @@ use Phalcon\Http\Request;
   *     @SWG\Property(property="created_date", type="string"),
   * )
  */
+
+use Phlacon\Mvc\Model;
+use Phalcon\Mvc\Model\Query\Builder;
+use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
+use Phalcon\Http\Request;
 
 class EmployeeprojectrelationController extends ControllerBase
 {
@@ -93,31 +94,76 @@ class EmployeeprojectrelationController extends ControllerBase
     {   
        
         $data =$this->request->getJsonRawBody();
-            
-         //   $workAlloted = $data['work_alloted'];   
-        $projectPercAlloted =  $data->work_alloted;
-        // $startDate = $data->start_date;
-        // $endDate = $data->end_date;
-        // for ( $i = $startDate; $i <= $endDate; $i = $i + 86400 )
-        // {
 
-            if($projectPercAlloted <= 1 )
+        $employeeCode = $data->employee_code;
+        $startDate = $data->start_date;
+        $endDate = $data->end_date;
+        $workAlloted = $data->work_alloted;
+
+
+        // var_dump($data->workAlloted);die();
+        $obj = Employee::findFirst([
+
+           "conditions" => "employee_code =".$employeeCode,
+        ]);
+
+        // return $this->response->setJsonContent($obj);
+
+        $params = [
+            'models' => 'Employeeprojectrelation'
+        ];
+
+        $builder = new Builder($params);
+        $builder->columns(['SUM(work_alloted) as total'])
+                ->from('Employeeprojectrelation');
+
+        if(isset($obj->id)) //&& is_numeric($id) && $id > 0
+        {
+              
+            $builder->where("employee_id = ".$obj->id)        
+                     ->andWhere("start_date between '".$startDate."'  AND '".$endDate."'")
+                      // ->andWhere("end_date between '" .$endDate. '" AND "' .$startDate"'")
+                     ->groupBy('employee_id'); 
+            
+        }  
+        // if($data->work_alloted>=100)
+        // {
+        //     return '100% work already alloted so can not allocate more.';
+        // }
+        else
+        {
+            echo "improper id please enter any integer type id";
+        }
+
+        $result = $builder->getQuery()->execute()->toArray();
+        // return $this->response->setJsonContent($result);   
+    
+        
+        $sum =$result[0]['total'] + $workAlloted;
+        // print_r($sum);die();
+            
+            if($sum >= 100)
+            {
+                return "Error: your total work is exceeding 100%"; 
+            }
+
+            if($workAlloted <= 1 )
             {
                 return "Error: you have to allocate minimun 1%";
             }
-                
-            if($projectPercAlloted >= 100)
+            
+            if($workAlloted >= 100)
             {
                 return "Error:you can not allocate more than 100%";
             }    
-        // }
+    
             else
             {   
 
                 $relation = new Employeeprojectrelation();
                 $relation->id = $data->id;
                 $relation->project_code = $data->project_code;
-                $relation->employee_id = $data->employee_id;
+                $relation->employee_id = $data->employee_code;
                 $relation->start_date = $data->start_date;
                 $relation->end_date = $data->end_date;
                 $relation->work_alloted = $data->work_alloted;
@@ -134,11 +180,6 @@ class EmployeeprojectrelationController extends ControllerBase
                      return $this->response->setJsonContent($relation);
                 }   
             }     
-        
-            // Loop between timestamps, 24 hours at a time
-            // for ( $i = $startDate; $i <= $endDate; $i = $i + 86400 ) {
-            //   $thisDate = date( 'Y-m-d', $i ); // 2020-01-01, 2020-01-10, etc
-            // }
     }
 
      /**
@@ -149,7 +190,7 @@ class EmployeeprojectrelationController extends ControllerBase
      *   operationId="Update Relation Detials",
      *   consumes={"application/json"},
      *   produces={"application/json"},
-      *    @SWG\Parameter(
+     *    @SWG\Parameter(
      *     description="ID of Employee Project Relation",
      *     in="path",
      *     name="id",
@@ -193,24 +234,23 @@ class EmployeeprojectrelationController extends ControllerBase
 
         $relation = Employeeprojectrelation::findFirst($id);
           
-            $relation->project_code = $data->project_code;
-            $relation->employee_id = $data->employee_id;
-            $relation->start_date = $data->start_date;
-            $relation->end_date = $data->end_date;
-            $relation->work_alloted = $data->work_alloted;
-            $relation->work_alloted_description = $data->work_alloted_description;
-            $relation->created_date = date('Y-m-d H:i:s');
-            $relation->updated_date = date('Y-m-d H:i:s');
+        $relation->project_code = $data->project_code;
+        $relation->employee_id = $data->employee_id;
+        $relation->start_date = $data->start_date;
+        $relation->end_date = $data->end_date;
+        $relation->work_alloted = $data->work_alloted;
+        $relation->work_alloted_description = $data->work_alloted_description;
+        $relation->created_date = date('Y-m-d H:i:s');
+        $relation->updated_date = date('Y-m-d H:i:s');
 
-            if (!$relation->update()) 
-             {
-                return $this->response->setJsonContent("Data not updated");
-             }
-            else
-             {  
-                return $this->response->setJsonContent($relation);
-             }
-                   
+        if (!$relation->update()) 
+        {
+            return $this->response->setJsonContent("Data not updated");
+        }
+        else
+        {  
+            return $this->response->setJsonContent($relation);
+        }               
     }
 
      /**
@@ -249,7 +289,7 @@ class EmployeeprojectrelationController extends ControllerBase
      * )
      */
     public function deleteAction($id)
-      {
+    {
         $relation = Employeeprojectrelation::findFirst($id);
         if(!$relation->delete())
         {
@@ -257,10 +297,9 @@ class EmployeeprojectrelationController extends ControllerBase
         }
         else
         {  
-            // echo json_encode($employee);
            return $this->response->setJsonContent($relation);
         } 
-      }
+    }
 
 
     /**
@@ -298,21 +337,21 @@ class EmployeeprojectrelationController extends ControllerBase
     public function getProjectByEmployeeAction($id)
     {             
        
-            $request = new Request();
-            
-            $params = [
-                'models' => 'Employee'
-            ];
+        $request = new Request();
+        
+        $params = [
+            'models' => 'Employee'
+        ];
 
-            $data = $this->getProjectList($params,$id); 
-            if(isset($data))
-            {
-                return $this->response->setJsonContent($data);
-            }
-            else
-            {
-                return $this->sendForbidden();
-            }
+        $data = $this->getProjectList($params,$id); 
+        if(isset($data))
+        {
+            return $this->response->setJsonContent($data);
+        }
+        else
+        {
+            return $this->sendForbidden();
+        }
         
     }
    
@@ -322,7 +361,7 @@ class EmployeeprojectrelationController extends ControllerBase
         $builder = new Builder($params);
         $builder->columns([
            // "Employee.*,Project.*,Employeeprojectrelation.*"
-             "Employee.id, Employee.employee_code, Employee.user_name, Project.project_code, Project.project_name, Project.project_lead, Project.project_technology, Project.start_date, Project.end_date, Employeeprojectrelation.id, Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
+            "Employee.id, Employee.employee_code, Employee.user_name, Project.project_code, Project.project_name, Project.project_lead, Project.project_technology, Project.start_date, Project.end_date, Employeeprojectrelation.id, Employeeprojectrelation.created_date, Employeeprojectrelation.updated_date"
          ]);
  
         $builder->Join("Project","Employee.id =Project.project_lead");
@@ -330,7 +369,7 @@ class EmployeeprojectrelationController extends ControllerBase
 
         if(isset($id)  && is_numeric($id) && $id > 0)
         {
-            $builder->where("Employeeprojectrelation.id = ".$id); //Employee.id = which is change to EPR.id
+            $builder->where("Employee.id = ".$id); //Employee.id = which is change to EPR.id
         }  
         else
         {
@@ -403,7 +442,7 @@ class EmployeeprojectrelationController extends ControllerBase
          ]);
         
         $builder->Join("Project","Employee.id =Project.project_lead");
-        $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.employee_id = Project.project_lead")->where("Employee.id = Project.project_lead");
+        $builder->Join("Employeeprojectrelation", "Employeeprojectrelation.employee_id = Project.project_lead");//->where("Employee.id = Project.project_lead")
        
         if(isset($project_code) && is_numeric($project_code) && $project_code > 0) 
         {
@@ -418,33 +457,86 @@ class EmployeeprojectrelationController extends ControllerBase
         return $data;
     }
 
-    public function getSumOfAllocationAction($employee_id)
+     /**
+     * @SWG\Get(
+     *     tags={"EmployeeProjectRelation"},
+     *     path="/Employeeprojectrelation/getSumOfAllocation/{id}",
+     *     description="Returns a Relation based on a single ID",
+     *     summary="Get work allocation of Employee Deatils by a particular ID",
+     *     operationId="GetEmployeeById",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *   @SWG\Parameter(
+     *     description="Employee code",
+     *     in="path",
+     *     name="id",
+     *     required=true,
+     *     type="integer",
+     *     format="int64"
+     *   ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Project response",
+     *          @SWG\Schema(ref="#/definitions/Employeeprojectrelation")
+     *     ),
+     *     @SWG\Response(
+     *         response="403",
+     *         description="Not Authorized Invalid or missing Authorization header"
+     *     ),
+     *     @SWG\Response(
+     *         response="500",
+     *         description="unexpected error",
+     *     )
+     * )
+     */
+    public function getSumOfAllocationAction($id) //$employee_id
     {   
-        
-        //SELECT SUM(project_perc_alloted) AS "Total working hours" FROM project WHERE project_lead =1 
+        //select start_date,end_date, sum(work_alloted) as 'work_alloted_sum' from employee_project_relation where employee_id =5  and start_date <= "2020-03-16" and end_date >= "2020-03-16" group by employee_id 
+    
 
-            $params = [
-                'models' => 'Employeeprojectrelation'
-            ];
-
-            $builder = new Builder($params);
-            $builder->columns(['SUM(work_alloted)'])
-                    ->from('Employeeprojectrelation');
-                if(isset($employee_id) && is_numeric($employee_id) && $employee_id > 0)
-                {
-                    $builder->where("work_alloted < 100")
-                            ->andWhere ("employee_id = ".$employee_id);
-
-                }  
-                else
-                {
-                    echo "improper id please enter any integer type id";
-                }
+        // $data = $this->request->getJsonRawBody();
+        // $employeeCode = $data->employee_code;
+        // $startDate = $data->start_date;
+        // $endDate = $data->end_date;
+        // $workAlloted = $data->workAlloted;
 
 
-                $data = $builder->getQuery()->execute()->toArray();
-                return $this->response->setJsonContent($data);;
-                
+        // var_dump($data->start_date);die();
+        $obj = Employee::findFirst([
+
+           "conditions" => "employee_code =".$id,
+        ]);
+
+        // return $this->response->setJsonContent($obj);
+
+        $params = [
+            'models' => 'Employeeprojectrelation'
+        ];
+
+        $builder = new Builder($params);
+        $builder->columns(['SUM(work_alloted)'])
+                ->from('Employeeprojectrelation');
+
+        if(isset($id) && is_numeric($id) && $id > 0)
+        {
+              
+            $builder->where("employee_id = ".$obj->id)        
+                     // ->andWhere("start_date <= " .$startDate)
+                     // ->andWhere("end_date >= " .$endDate)
+                     ->groupBy('employee_id');
+            
+        }  
+        // if($data->work_alloted>=100)
+        // {
+        //     return '100% work already alloted so can not allocate more.';
+        // }
+        else
+        {
+            echo "improper id please enter any integer type id";
+        }
+
+        $result = $builder->getQuery()->execute()->toArray();
+        return $this->response->setJsonContent($result);   
     
     }
    
@@ -456,7 +548,7 @@ class EmployeeprojectrelationController extends ControllerBase
      *   operationId="Update Relation Detials",
      *   consumes={"application/json"},
      *   produces={"application/json"},
-      *    @SWG\Parameter(
+     *    @SWG\Parameter(
      *     description="ID of Employee Project Relation",
      *     in="path",
      *     name="id",
@@ -513,61 +605,25 @@ class EmployeeprojectrelationController extends ControllerBase
          
         else
         {   
-    
-          //  $relation->work_alloted += $projectPercAlloted;
+        
             $relation->work_alloted += $projectPercAlloted;  
             $relation->updated_date = date('Y-m-d H:i:s');
 
             if($relation->work_alloted  >= 100)
             { 
-                return  $this->response->setJsonContent("Error: your sum of work exceeding more than 100");
+                return $this->response->setJsonContent("Error:your sum of work exceeding more than 100");
             }
 
             if (!$relation->update()) 
-             {
+            {
                 return $this->response->setStatusCode(400);
                 return $this->response->setJsonContent("Data not updated");
-             }
+            }
             else
-             {  
+            {  
                 return $this->response->setJsonContent($relation);
-             }
+            }
         }
     }
 
- }   
-
-
-
-
-
- /* public function projectAllocationAction($project_lead)
-    {   
-        $projectPercAlloted;
-        $minPercentageAlloted =1;
-        $maxPercentageAlloted =100;
-        
-        //SELECT SUM(project_perc_alloted) AS "Total working hours" FROM project WHERE project_lead =1 
-
-            $params = [
-                'models' => 'Project'
-            ];
-
-            $builder = new Builder($params);
-            $builder->columns(['SUM(project_perc_alloted)'])
-                    ->from('Project');
-                if(isset($project_lead) && is_numeric($project_lead) && $project_lead > 0)
-                {
-                    $builder->where("project_lead = ".$project_lead);
-                }  
-                else
-                {
-                    echo "improper id please enter any integer type id";
-                }
-
-
-                $displayData = $builder->getQuery()->execute()->toArray();
-               // return $this->response->setJsonContent($data);;
-                
-    
-    }
+}   
