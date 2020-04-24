@@ -99,9 +99,8 @@ class EmployeeprojectrelationController extends ControllerBase
         $startDate = $data->start_date;
         $endDate = $data->end_date;
         $workAlloted = $data->work_alloted;
+        
 
-
-        // var_dump($data->workAlloted);die();
         $obj = Employee::findFirst([
 
            "conditions" => "employee_code =".$employeeCode,
@@ -117,7 +116,7 @@ class EmployeeprojectrelationController extends ControllerBase
         $builder->columns(['SUM(work_alloted) as total'])
                 ->from('Employeeprojectrelation');
 
-        if(isset($obj->id)) //&& is_numeric($id) && $id > 0
+        if(isset($obj->id)) 
         {
               
             $builder->where("employee_id = ".$obj->id)        
@@ -126,10 +125,7 @@ class EmployeeprojectrelationController extends ControllerBase
                      ->groupBy('employee_id'); 
             
         }  
-        // if($data->work_alloted>=100)
-        // {
-        //     return '100% work already alloted so can not allocate more.';
-        // }
+     
         else
         {
             echo "improper id please enter any integer type id";
@@ -140,46 +136,45 @@ class EmployeeprojectrelationController extends ControllerBase
     
         
         $sum =$result[0]['total'] + $workAlloted;
-        // print_r($sum);die();
             
-            if($sum >= 100)
-            {
-                return "Error: your total work is exceeding 100%"; 
-            }
+        if($sum >= 100)
+        {
+            return "Error: your total work allocation is exceeding 100%"; 
+        }
 
-            if($workAlloted <= 1 )
-            {
-                return "Error: you have to allocate minimun 1%";
-            }
+        if($workAlloted <= 1 )
+        {
+            return "Error: you have to allocate minimun 1% work";
+        }
+        
+        if($workAlloted >= 100)
+        {
+            return "Error:you can not allocate more than 100%";
+        }    
+
+        else
+        {   
+
+            $relation = new Employeeprojectrelation();
+            $relation->id = $data->id;
+            $relation->project_code = $data->project_code;
+            $relation->employee_id = $data->employee_code;
+            $relation->start_date = $data->start_date;
+            $relation->end_date = $data->end_date;
+            $relation->work_alloted = $data->work_alloted;
+            $relation->work_alloted_description = $data->work_alloted_description;
+            $relation->updated_date = date('Y-m-d H:i:s');
+            $relation->created_date = date('Y-m-d H:i:s');
             
-            if($workAlloted >= 100)
+            if (!$relation->save()) 
             {
-                return "Error:you can not allocate more than 100%";
-            }    
-    
+                 return $this->response->setJsonContent("Data Not Inserted.");
+            }
             else
-            {   
-
-                $relation = new Employeeprojectrelation();
-                $relation->id = $data->id;
-                $relation->project_code = $data->project_code;
-                $relation->employee_id = $data->employee_code;
-                $relation->start_date = $data->start_date;
-                $relation->end_date = $data->end_date;
-                $relation->work_alloted = $data->work_alloted;
-                $relation->work_alloted_description = $data->work_alloted_description;
-                $relation->updated_date = date('Y-m-d H:i:s');
-                $relation->created_date = date('Y-m-d H:i:s');
-                
-                if (!$relation->save()) 
-                {
-                     return $this->response->setJsonContent("Data Not Inserted.");
-                }
-                else
-                {  
-                     return $this->response->setJsonContent($relation);
-                }   
-            }     
+            {  
+                 return $this->response->setJsonContent($relation);
+            }   
+        }     
     }
 
      /**
@@ -455,89 +450,6 @@ class EmployeeprojectrelationController extends ControllerBase
 
         $data = $builder->getQuery()->execute()->toArray();
         return $data;
-    }
-
-     /**
-     * @SWG\Get(
-     *     tags={"EmployeeProjectRelation"},
-     *     path="/Employeeprojectrelation/getSumOfAllocation/{id}",
-     *     description="Returns a Relation based on a single ID",
-     *     summary="Get work allocation of Employee Deatils by a particular ID",
-     *     operationId="GetEmployeeById",
-     *     consumes={"application/json"},
-     *     produces={"application/json"},
-     *   @SWG\Parameter(
-     *     description="Employee code",
-     *     in="path",
-     *     name="id",
-     *     required=true,
-     *     type="integer",
-     *     format="int64"
-     *   ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="Project response",
-     *          @SWG\Schema(ref="#/definitions/Employeeprojectrelation")
-     *     ),
-     *     @SWG\Response(
-     *         response="403",
-     *         description="Not Authorized Invalid or missing Authorization header"
-     *     ),
-     *     @SWG\Response(
-     *         response="500",
-     *         description="unexpected error",
-     *     )
-     * )
-     */
-    public function getSumOfAllocationAction($id) //$employee_id
-    {   
-        //select start_date,end_date, sum(work_alloted) as 'work_alloted_sum' from employee_project_relation where employee_id =5  and start_date <= "2020-03-16" and end_date >= "2020-03-16" group by employee_id 
-    
-
-        // $data = $this->request->getJsonRawBody();
-        // $employeeCode = $data->employee_code;
-        // $startDate = $data->start_date;
-        // $endDate = $data->end_date;
-        // $workAlloted = $data->workAlloted;
-
-
-        // var_dump($data->start_date);die();
-        $obj = Employee::findFirst([
-
-           "conditions" => "employee_code =".$id,
-        ]);
-
-        // return $this->response->setJsonContent($obj);
-
-        $params = [
-            'models' => 'Employeeprojectrelation'
-        ];
-
-        $builder = new Builder($params);
-        $builder->columns(['SUM(work_alloted)'])
-                ->from('Employeeprojectrelation');
-
-        if(isset($id) && is_numeric($id) && $id > 0)
-        {
-              
-            $builder->where("employee_id = ".$obj->id)        
-                     // ->andWhere("start_date <= " .$startDate)
-                     // ->andWhere("end_date >= " .$endDate)
-                     ->groupBy('employee_id');
-            
-        }  
-        // if($data->work_alloted>=100)
-        // {
-        //     return '100% work already alloted so can not allocate more.';
-        // }
-        else
-        {
-            echo "improper id please enter any integer type id";
-        }
-
-        $result = $builder->getQuery()->execute()->toArray();
-        return $this->response->setJsonContent($result);   
-    
     }
    
      /**
